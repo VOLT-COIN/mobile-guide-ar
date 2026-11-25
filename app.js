@@ -28,7 +28,7 @@ function cards(){
   $("stats").innerHTML='<span>العملات المتتبَّعة: <b class="num">'+order.length+'</b></span><span>حجم 24 ساعة (المتتبَّعة): <b class="num">'+fv(vol)+' USDT</b></span><span>حصة BTC من هذا الحجم: <b class="num">'+(D.BTC?(D.BTC.vol/vol*100).toFixed(1):"—")+'%</b></span><span>صاعدة: <b class="up num">'+up+'</b></span><span>هابطة: <b class="down num">'+dn+'</b></span>';
   function c(s,l,v,sub,cl){return'<div class="card click" data-go="'+s+'"><div class="l">'+l+'</div><div class="v">'+v+'</div><div class="s '+cl+'"><span class="num">'+sub+"</span></div></div>"}
   function list(t,a){return'<div class="card"><div class="l">'+t+'</div><ul class="mini">'+a.map(function(s){return'<li data-go="'+s+'"><span>'+s+'</span><span class="num '+(D[s].pct>=0?"up":"down")+'">'+fmt(D[s].last)+" · "+pc(D[s].pct)+"</span></li>"}).join("")+"</ul></div>"}
-  $("cards").innerHTML=(D.BTC?c("BTC","Bitcoin",fmt(D.BTC.last)+" USDT",pc(D.BTC.pct),D.BTC.pct>=0?"up":"down"):"")+(D.ETH?c("ETH","Ethereum",fmt(D.ETH.last)+" USDT",pc(D.ETH.pct),D.ETH.pct>=0?"up":"down"):"")+list("أعلى صعودًا (من المتتبَّعة)",gn)+list("أكثر هبوطًا (من المتتبَّعة)",ls)}
+  heat();$("cards").innerHTML=(D.BTC?c("BTC","Bitcoin",fmt(D.BTC.last)+" USDT",pc(D.BTC.pct),D.BTC.pct>=0?"up":"down"):"")+(D.ETH?c("ETH","Ethereum",fmt(D.ETH.last)+" USDT",pc(D.ETH.pct),D.ETH.pct>=0?"up":"down"):"")+list("أعلى صعودًا (من المتتبَّعة)",gn)+list("أكثر هبوطًا (من المتتبَّعة)",ls)}
 function listFor(){var q=qtxt.trim().toUpperCase();var l=order.slice();
   if(q)l=l.filter(function(s){return s.indexOf(q)>-1||(NAMES[s]||"").toUpperCase().indexOf(q)>-1});
   if(tab==="gain")l=l.filter(function(s){return D[s].pct>0});if(tab==="lose")l=l.filter(function(s){return D[s].pct<0});if(tab==="fav")l=l.filter(isFav);
@@ -54,9 +54,10 @@ function sparks(l){var need=l.filter(function(s){return !sparkAt[s]||Date.now()-
 // ---------- detail
 var RG={"1D":["15m",96,"24 ساعة"],"7D":["1h",168,"7 أيام"],"1M":["4h",180,"30 يومًا"],"3M":["1d",90,"3 شهور"],"1Y":["1d",365,"سنة"]},series=[],cKey="",hover=-1,tick24={},tickAt=0;
 function showRoute(){var m=/^#\/coin\/([A-Z0-9]+)/.exec(location.hash);
-  if(m&&NAMES[m[1]]){route="coin";sel=m[1];$("home").className="home hide";$("det").className="det show";window.scrollTo(0,0);loadChart();loadTick();render();coinNews()}
-  else{route="home";$("home").className="home";$("det").className="det";render();table()}
-  $("navMarket").className=route==="home"&&tab!=="fav"?"on":"";$("navFav").className=route==="home"&&tab==="fav"?"on":""}
+  if(m&&NAMES[m[1]]){route="coin";sel=m[1];$("home").className="home hide";$("det").className="det show";$("tools").className="det";window.scrollTo(0,0);loadChart();loadTick();render();coinNews()}
+  else if(location.hash==="#/tools"){route="tools";$("home").className="home hide";$("det").className="det";$("tools").className="det show";window.scrollTo(0,0);render()}
+  else{route="home";$("home").className="home";$("det").className="det";$("tools").className="det";render();table()}
+  $("navMarket").className=route==="home"&&tab!=="fav"?"on":"";$("navFav").className=route==="home"&&tab==="fav"?"on":"";$("navTools").className=route==="tools"?"on":""}
 function openCoin(s){location.hash="#/coin/"+s}
 function loadTick(){var s=sel;fetch(BASE+"/api/v3/ticker/24hr?symbol="+s+"USDT").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(s===sel){tick24=j;tickAt=Date.now();stats()}}).catch(function(){tick24={};stats()})}
 function head(){var d=D[sel];if(!d)return;$("dName").textContent=NAMES[sel]||sel;$("dSub").textContent=sel+"/USDT · المرتبة "+rk(sel)+" بحجم التداول";$("crumbName").textContent=NAMES[sel]||sel;$("nName").textContent=NAMES[sel]||sel;
@@ -91,8 +92,32 @@ function drawChart(){var cv=$("chart"),dpr=window.devicePixelRatio||1,w=cv.clien
   drawChart.n=n;drawChart.geo={L:L,cw:cw}}
 function hv(e){var g=drawChart.geo;if(!g)return;var r=$("chart").getBoundingClientRect(),xx=(e.touches?e.touches[0].clientX:e.clientX)-r.left;hover=Math.max(0,Math.min(drawChart.n-1,Math.floor((xx-g.L)/g.cw*drawChart.n)));drawChart()}
 var cvs=$("chart");cvs.addEventListener("mousemove",hv);cvs.addEventListener("touchstart",hv,{passive:true});cvs.addEventListener("touchmove",hv,{passive:true});cvs.addEventListener("mouseleave",function(){hover=-1;drawChart()});cvs.addEventListener("touchend",function(){hover=-1;drawChart()});
+
+// ---------- heatmap + tools
+function heat(){var l=order.slice(0,40);$("heat").innerHTML=l.map(function(s){var d=D[s],a=Math.min(1,Math.abs(d.pct)/8),col=d.pct>=0?"22,199,132":"234,57,67";return'<div class="tile" data-go="'+s+'" style="flex-grow:'+Math.round(Math.sqrt(d.vol/1e6)*3+10)+';background:rgba('+col+','+(0.16+a*0.55).toFixed(2)+')"><b>'+s+'</b><span class="num">'+pc(d.pct)+"</span></div>"}).join("")}
+$("heat").addEventListener("click",function(e){var g=e.target.closest("[data-go]");if(g)openCoin(g.dataset.go)});
+var LOTS=[];try{LOTS=JSON.parse(localStorage.getItem("nabd_lots")||"[]")}catch(e){}
+function saveLots(){try{localStorage.setItem("nabd_lots",JSON.stringify(LOTS))}catch(e){}}
+function px(x){return x==="USDT"?1:D[x]?D[x].last:NaN}
+function opts(withUsdt){return(withUsdt?['<option value="USDT">USDT</option>']:[]).concat(order.map(function(s){return'<option value="'+s+'">'+s+" · "+esc(NAMES[s]||s)+"</option>"})).join("")}
+function fillSel(){if(!order.length||$("cFrom").options.length)return;$("cFrom").innerHTML=opts(1);$("cTo").innerHTML=opts(1);$("pCoin").innerHTML=opts(0);$("cFrom").value="BTC";$("cTo").value="USDT"}
+function num(v){v=parseFloat(v);return isFinite(v)?v:NaN}
+function toolsRender(){fillSel();if(!order.length){$("cRes").textContent="جارٍ تحميل الأسعار...";return}
+  var a=num($("cAmt").value),f=$("cFrom").value,t=$("cTo").value,r=a*px(f)/px(t);
+  $("cRes").textContent=isFinite(r)&&a>=0?a.toLocaleString("en-US",{maximumFractionDigits:8})+" "+f+" = "+r.toLocaleString("en-US",{maximumFractionDigits:r<1?8:4})+" "+t:"أدخل مبلغًا صحيحًا";
+  var tv=0,tc=0,tp=0;
+  $("pRows").innerHTML=LOTS.length?LOTS.map(function(l,i){var p=px(l.s),v=l.a*p,pl=l.p!=null?v-l.a*l.p:null;tv+=isFinite(v)?v:0;if(pl!=null&&isFinite(pl)){tc+=l.a*l.p;tp+=pl}
+    return"<tr><td><b>"+esc(l.s)+'</b> <small class="meta">'+esc(NAMES[l.s]||"")+'</small></td><td class="n">'+l.a+'</td><td class="n">'+(l.p!=null?fmt(l.p):"—")+'</td><td class="n">'+fmt(p)+'</td><td class="n">'+fmt(v)+'</td><td class="n '+(pl==null?"":pl>=0?"up":"down")+'">'+(pl==null?"—":fmt(pl)+" ("+pc(pl/(l.a*l.p)*100)+")")+'</td><td><button class="btn del" data-del="'+i+'">حذف</button></td></tr>'}).join(""):'<tr><td colspan="7" class="empty">لا توجد عملات في محفظتك بعد. أضف أول عملة من النموذج أعلاه.</td></tr>';
+  $("pTotal").innerHTML=LOTS.length?'<div><span>القيمة الحالية</span><br><b class="num">'+fmt(tv)+' USDT</b></div>'+(tc>0?'<div><span>الربح/الخسارة (للصفقات ذات سعر الشراء)</span><br><b class="num '+(tp>=0?"up":"down")+'">'+fmt(tp)+" USDT ("+pc(tp/tc*100)+")</b></div>":""):""}
+$("pAdd").onclick=function(){var a=num($("pAmt").value),p=$("pPrice").value.trim()===""?null:num($("pPrice").value),m=$("pMsg");
+  if(!(a>0)){m.textContent="أدخل كمية أكبر من صفر.";return}if(p!==null&&!(p>=0)){m.textContent="سعر الشراء غير صحيح.";return}
+  LOTS.push({s:$("pCoin").value,a:a,p:p});saveLots();$("pAmt").value="";$("pPrice").value="";m.textContent="تمت الإضافة.";toolsRender()};
+$("pRows").addEventListener("click",function(e){var d=e.target.closest("[data-del]");if(d){LOTS.splice(+d.dataset.del,1);saveLots();toolsRender()}});
+["cAmt","cFrom","cTo"].forEach(function(i){$(i).addEventListener("input",toolsRender)});
+$("cSwap").onclick=function(){var f=$("cFrom").value;$("cFrom").value=$("cTo").value;$("cTo").value=f;toolsRender()};
+$("navTools").onclick=function(){location.hash="#/tools"};
 // ---------- events
-function render(){lastRender=Date.now();if(route==="home"){cards();table()}else{head();stats();drawChart()}}
+function render(){lastRender=Date.now();if(route==="home"){cards();table()}else if(route==="tools"){toolsRender()}else{head();stats();drawChart()}}
 function schedule(){if(pending)return;pending=true;setTimeout(function(){pending=false;render()},Math.max(0,1000-(Date.now()-lastRender)))}
 $("range").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;range=b.dataset.r;[].forEach.call(this.children,function(c){c.className=c===b?"on":""});loadChart()});
 $("ctype").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;ctype=b.dataset.c;[].forEach.call(this.children,function(c){c.className=c===b?"on":""});drawChart()});
