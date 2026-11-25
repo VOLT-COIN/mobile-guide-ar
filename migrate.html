@@ -1,0 +1,9 @@
+<!doctype html><html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Moving to Chainbeat</title></head><body style="font-family:system-ui;background:#070b14;color:#e9eef9;padding:24px"><p id="m">Moving your saved favorites and portfolio to the new address...</p><script>
+(function(){
+var o={};try{var f=localStorage.getItem("nabd_fav"),l=localStorage.getItem("nabd_lots"),t=localStorage.getItem("nabd_theme");
+if(f)o.fav=JSON.parse(f);if(l)o.lots=JSON.parse(l);if(t)o.theme=t}catch(e){}
+var go="https://chainbeat.pages.dev/";
+if(location.hostname==="chainbeat.pages.dev"){document.getElementById("m").textContent="This page is only for moving data from the old address.";return}
+if(o.fav||o.lots||o.theme){var s=btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_");go+="#import="+s}
+location.replace(go)})();
+</script></body></html>
