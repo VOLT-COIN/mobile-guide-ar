@@ -94,9 +94,10 @@ function hv(e){var g=drawChart.geo;if(!g)return;var r=$("chart").getBoundingClie
 var cvs=$("chart");cvs.addEventListener("mousemove",hv);cvs.addEventListener("touchstart",hv,{passive:true});cvs.addEventListener("touchmove",hv,{passive:true});cvs.addEventListener("mouseleave",function(){hover=-1;drawChart()});cvs.addEventListener("touchend",function(){hover=-1;drawChart()});
 
 // ---------- heatmap + tools
-function heat(){var l=order.slice(0,40);$("heat").innerHTML=l.map(function(s){var d=D[s],a=Math.min(1,Math.abs(d.pct)/8),col=d.pct>=0?"22,199,132":"234,57,67";return'<div class="tile" data-go="'+s+'" style="flex-grow:'+Math.round(Math.sqrt(d.vol/1e6)*3+10)+';background:rgba('+col+','+(0.16+a*0.55).toFixed(2)+')"><b>'+s+'</b><span class="num">'+pc(d.pct)+"</span></div>"}).join("")}
+function heat(){var l=order.slice(0,40);$("heat").innerHTML=l.map(function(s){var d=D[s],a=Math.min(1,Math.abs(d.pct)/8),col=d.pct>=0?"22,199,132":"234,57,67";return'<div class="tile" data-go="'+s+'" style="background:rgba('+col+','+(0.16+a*0.55).toFixed(2)+')"><b>'+s+'</b><span class="num">'+pc(d.pct)+"</span></div>"}).join("")}
 $("heat").addEventListener("click",function(e){var g=e.target.closest("[data-go]");if(g)openCoin(g.dataset.go)});
 var LOTS=[];try{LOTS=JSON.parse(localStorage.getItem("nabd_lots")||"[]")}catch(e){}
+LOTS=(Array.isArray(LOTS)?LOTS:[]).filter(function(l){return l&&typeof l.s==="string"&&isFinite(l.a)&&l.a>0&&(l.p==null||(isFinite(l.p)&&l.p>=0))});
 function saveLots(){try{localStorage.setItem("nabd_lots",JSON.stringify(LOTS))}catch(e){}}
 function px(x){return x==="USDT"?1:D[x]?D[x].last:NaN}
 function opts(withUsdt){return(withUsdt?['<option value="USDT">USDT</option>']:[]).concat(order.map(function(s){return'<option value="'+s+'">'+s+" · "+esc(NAMES[s]||s)+"</option>"})).join("")}
@@ -104,13 +105,16 @@ function fillSel(){if(!order.length||$("cFrom").options.length)return;$("cFrom")
 function num(v){v=parseFloat(v);return isFinite(v)?v:NaN}
 function toolsRender(){fillSel();if(!order.length){$("cRes").textContent="جارٍ تحميل الأسعار...";return}
   var a=num($("cAmt").value),f=$("cFrom").value,t=$("cTo").value,r=a*px(f)/px(t);
-  $("cRes").textContent=isFinite(r)&&a>=0?a.toLocaleString("en-US",{maximumFractionDigits:8})+" "+f+" = "+r.toLocaleString("en-US",{maximumFractionDigits:r<1?8:4})+" "+t:"أدخل مبلغًا صحيحًا";
-  var tv=0,tc=0,tp=0;
-  $("pRows").innerHTML=LOTS.length?LOTS.map(function(l,i){var p=px(l.s),v=l.a*p,pl=l.p!=null?v-l.a*l.p:null;tv+=isFinite(v)?v:0;if(pl!=null&&isFinite(pl)){tc+=l.a*l.p;tp+=pl}
-    return"<tr><td><b>"+esc(l.s)+'</b> <small class="meta">'+esc(NAMES[l.s]||"")+'</small></td><td class="n">'+l.a+'</td><td class="n hm">'+(l.p!=null?fmt(l.p):"—")+'</td><td class="n hm">'+fmt(p)+'</td><td class="n">'+fmt(v)+'</td><td class="n '+(pl==null?"":pl>=0?"up":"down")+'">'+(pl==null?"—":fmt(pl)+" ("+pc(pl/(l.a*l.p)*100)+")")+'</td><td><button class="btn del" data-del="'+i+'">حذف</button></td></tr>'}).join(""):'<tr><td colspan="7" class="empty">لا توجد عملات في محفظتك بعد. أضف أول عملة من النموذج أعلاه.</td></tr>';
-  $("pTotal").innerHTML=LOTS.length?'<div><span>القيمة الحالية</span><br><b class="num">'+fmt(tv)+' USDT</b></div>'+(tc>0?'<div><span>الربح/الخسارة (للصفقات ذات سعر الشراء)</span><br><b class="num '+(tp>=0?"up":"down")+'">'+fmt(tp)+" USDT ("+pc(tp/tc*100)+")</b></div>":""):""}
+  $("cRes").textContent=isFinite(r)&&isFinite(a)&&a>=0&&!isStale()?a.toLocaleString("en-US",{maximumFractionDigits:8})+" "+f+" = "+r.toLocaleString("en-US",{maximumFractionDigits:r<1?8:4})+" "+t:(isStale()&&isFinite(r)?"الأسعار متأخرة أو منقطعة، لا يمكن عرض تحويل حديث":"أدخل مبلغًا صحيحًا");
+  var stale=isStale(),tb=$("tStale");tb.hidden=!stale;if(stale)tb.textContent="الأسعار متأخرة أو منقطعة (آخر تحديث "+(lastTick?tm(lastTick):"لم يصل بعد")+"). القيم أدناه قديمة وليست حالية.";
+  var tv=0,tc=0,tp=0,miss=0,nocost=0;
+  $("pRows").innerHTML=LOTS.length?LOTS.map(function(l,i){var p=px(l.s),ok=isFinite(p),v=ok?l.a*p:NaN,pl=(l.p!=null&&ok)?v-l.a*l.p:null;if(ok)tv+=v;else miss++;if(l.p==null)nocost++;if(pl!=null){tc+=l.a*l.p;tp+=pl}
+    var pct=pl==null?"":(l.a*l.p>0?" ("+pc(pl/(l.a*l.p)*100)+")":" (النسبة غير محسوبة: تكلفة صفر)");
+    var plTxt=pl==null?(l.p==null?"— (بدون سعر شراء)":"— (السعر غير متاح)"):fmt(pl)+" USDT"+pct;
+    return'<div class="pcard'+(stale?" stalecls":"")+'"><div class="ph2"><b>'+esc(l.s)+'</b> <small class="meta">'+esc(NAMES[l.s]||"")+'</small><button class="btn del" data-del="'+i+'">حذف</button></div><dl><div><dt>الكمية</dt><dd class="num">'+l.a+'</dd></div><div><dt>سعر الشراء</dt><dd class="num">'+(l.p!=null?fmt(l.p):"—")+'</dd></div><div><dt>السعر الحالي'+(stale?" (قديم)":"")+'</dt><dd class="num">'+(ok?fmt(p):"غير متاح")+'</dd></div><div><dt>القيمة (USDT)</dt><dd class="num">'+(ok?fmt(v):"—")+'</dd></div></dl><div class="plrow">الربح/الخسارة: <b class="num '+(pl==null?"":pl>=0?"up":"down")+'">'+plTxt+'</b></div></div>'}).join(""):'<div class="empty">لا توجد عملات في محفظتك بعد. أضف أول عملة من النموذج أعلاه.</div>';
+  $("pTotal").innerHTML=LOTS.length?'<div><span>القيمة'+(stale?" (قديمة)":" الحالية")+'</span><br><b class="num">'+fmt(tv)+' USDT</b>'+(miss?'<br><small class="meta">لم تُحسب '+miss+' عملة لعدم توفر سعرها</small>':"")+'</div>'+(tc>0?'<div><span>الربح/الخسارة (للصفقات ذات سعر شراء فقط)</span><br><b class="num '+(tp>=0?"up":"down")+'">'+fmt(tp)+" USDT ("+pc(tp/tc*100)+")</b>"+(nocost?'<br><small class="meta">'+nocost+' صفقة بدون سعر شراء مستبعدة من الربح/الخسارة</small>':"")+'</div>':(nocost?'<div><small class="meta">لا يوجد سعر شراء لحساب الربح/الخسارة</small></div>':"")):""}
 $("pAdd").onclick=function(){var a=num($("pAmt").value),p=$("pPrice").value.trim()===""?null:num($("pPrice").value),m=$("pMsg");
-  if(!(a>0)){m.textContent="أدخل كمية أكبر من صفر.";return}if(p!==null&&!(p>=0)){m.textContent="سعر الشراء غير صحيح.";return}
+  if(!(a>0&&isFinite(a))){m.textContent="أدخل كمية أكبر من صفر.";return}if(p!==null&&!(isFinite(p)&&p>=0)){m.textContent="سعر الشراء غير صحيح.";return}
   LOTS.push({s:$("pCoin").value,a:a,p:p});saveLots();$("pAmt").value="";$("pPrice").value="";m.textContent="تمت الإضافة.";toolsRender()};
 $("pRows").addEventListener("click",function(e){var d=e.target.closest("[data-del]");if(d){LOTS.splice(+d.dataset.del,1);saveLots();toolsRender()}});
 ["cAmt","cFrom","cTo"].forEach(function(i){$(i).addEventListener("input",toolsRender)});
@@ -155,7 +159,7 @@ setInterval(function(){
   if(age<15000){setStatus("live",wsOk?"مباشر: تحديث كل ثانية تقريبًا":"متصل: تحديث كل 10 ثوانٍ");b.hidden=true}
   else if(age<60000){setStatus("stale","تأخر التحديث");b.hidden=false;b.className="banner";b.textContent="تأخر وصول الأسعار من المصدر. الأرقام المعروضة قد لا تكون حديثة (آخر تحديث "+tm(lastTick)+")."}
   else{setStatus("err","انقطع الاتصال بالمصدر");b.hidden=false;b.className="banner err";b.textContent="انقطع الاتصال بمصدر الأسعار منذ أكثر من دقيقة. الأرقام المعروضة قديمة (آخر تحديث "+tm(lastTick)+") ونحاول إعادة الاتصال تلقائيًا."}
-  if(age>=15000)document.querySelector("table").className="stalecls"},1000);
+  if(route==="tools")toolsRender();if(age>=15000)document.querySelector("table").className="stalecls"},1000);
 setInterval(function(){if(!wsOk||isStale())poll()},10000);
 setInterval(function(){rank();if(route==="home"&&order.length)table();if(route==="coin"&&Date.now()-tickAt>30000)loadTick()},60000);
 setInterval(function(){if(route==="coin")loadChart()},300000);
