@@ -5,7 +5,7 @@ var NAMES={BTC:"Bitcoin",ETH:"Ethereum",BNB:"BNB",SOL:"Solana",XRP:"XRP",ADA:"Ca
 var STABLE={USDC:1,FDUSD:1,TUSD:1,USDP:1,DAI:1,EUR:1,AEUR:1,USDE:1,BUSD:1,XUSD:1,USD1:1};
 var D={},lastTick=0,wsOk=false,ws=null,order=[],spark={},sparkAt={},p7={},prev={},lastRender=0,pending=false;
 var sel="BTC",range="1D",ctype="line",tab="all",sortK="vol",sortD=-1,shown=40,qtxt="",route="home";
-var FAV=[];try{FAV=JSON.parse(localStorage.getItem("nabd_fav")||"[]")}catch(e){}
+var FAV=[];try{FAV=JSON.parse(localStorage.getItem("chainbeat_fav")||"[]")}catch(e){}
 var $=function(i){return document.getElementById(i)};
 function fmt(p){p=+p;if(!isFinite(p))return"—";return p>=1000?p.toLocaleString("en-US",{maximumFractionDigits:2}):p>=1?p.toFixed(3):p>=0.01?p.toFixed(4):p.toPrecision(3)}
 function fv(v){v=+v;if(!isFinite(v))return"—";return v>=1e9?(v/1e9).toFixed(2)+"B":v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?(v/1e3).toFixed(0)+"K":v.toFixed(0)}
@@ -18,7 +18,7 @@ function ico(s){if(HASICO[s])return'<div class="ico has"><svg viewBox="0 0 32 32
 function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
 function setStatus(c,t){$("status").className="pill "+c;$("statusText").textContent=t}
 function isFav(s){return FAV.indexOf(s)>-1}
-function toggleFav(s){var i=FAV.indexOf(s);i>-1?FAV.splice(i,1):FAV.push(s);try{localStorage.setItem("nabd_fav",JSON.stringify(FAV))}catch(e){}render()}
+function toggleFav(s){var i=FAV.indexOf(s);i>-1?FAV.splice(i,1):FAV.push(s);try{localStorage.setItem("chainbeat_fav",JSON.stringify(FAV))}catch(e){}render()}
 function ingest(arr){arr.forEach(function(t){var s=t.s;if(!/USDT$/.test(s))return;var b=s.slice(0,-4);if(!NAMES[b]||STABLE[b]||/(UP|DOWN|BULL|BEAR)$/.test(b))return;var o=+t.o,c=+t.c;D[b]={last:c,open:o,pct:o>0?(c-o)/o*100:0,high:+t.h,low:+t.l,vol:+t.q}});lastTick=Date.now()}
 function rank(){order=Object.keys(D).sort(function(a,b){return D[b].vol-D[a].vol}).slice(0,200)}
 function rk(s){return order.indexOf(s)+1}
@@ -59,8 +59,8 @@ function setMeta(){var t,d,u;
   if(route==="coin"){t=NAMES[sel]+" ("+sel+") Live Price in USDT | Chainbeat";d=NAMES[sel]+" ("+sel+") live price against USDT on Binance with a chart, 24h statistics and news. For information only, not investment advice.";u="/coin/"+sel}
   else if(route==="tools"){t="Tools: Crypto Converter and Portfolio Calculator | Chainbeat";d="Convert between cryptocurrencies and USDT, and a local portfolio calculator saved only in your browser. A calculation tool for information, not investment advice.";u="/tools"}
   else{t="Chainbeat | Live Crypto Prices and News";d="Live prices for popular cryptocurrencies from Binance, with charts, a page for each coin, search and headlines from known sources. The last update time is always shown.";u="/"}
-  document.title=t;document.querySelector('meta[name="description"]').content=d;document.querySelector('link[rel="canonical"]').href="https://nabd-crypto.pages.dev"+u;
-  document.querySelector('meta[property="og:title"]').content=t;document.querySelector('meta[property="og:description"]').content=d;document.querySelector('meta[property="og:url"]').content="https://nabd-crypto.pages.dev"+u}
+  document.title=t;document.querySelector('meta[name="description"]').content=d;document.querySelector('link[rel="canonical"]').href="https://chainbeat.pages.dev"+u;
+  document.querySelector('meta[property="og:title"]').content=t;document.querySelector('meta[property="og:description"]').content=d;document.querySelector('meta[property="og:url"]').content="https://chainbeat.pages.dev"+u}
 function curPath(){var m=/^\/coin\/([A-Za-z0-9]+)\/?$/.exec(location.pathname);if(m)return["coin",m[1].toUpperCase()];if(/^\/tools\/?$/.test(location.pathname))return["tools"];return["home"]}
 function go(p){if(location.pathname===p)return showRoute();history.pushState(null,"",p);showRoute()}
 function showRoute(){legacyHash();var cp=curPath(),m=cp[0]==="coin"?[0,cp[1]]:null;
@@ -106,9 +106,9 @@ var cvs=$("chart");cvs.addEventListener("mousemove",hv);cvs.addEventListener("to
 // ---------- heatmap + tools
 function heat(){var l=order.slice(0,40);$("heat").innerHTML=l.map(function(s){var d=D[s],a=Math.min(1,Math.abs(d.pct)/8),col=d.pct>=0?"22,199,132":"234,57,67";return'<div class="tile" data-go="'+s+'" style="background:rgba('+col+','+(0.16+a*0.55).toFixed(2)+')"><b>'+s+'</b><span class="num">'+pc(d.pct)+"</span></div>"}).join("")}
 $("heat").addEventListener("click",function(e){var g=e.target.closest("[data-go]");if(g)openCoin(g.dataset.go)});
-var LOTS=[];try{LOTS=JSON.parse(localStorage.getItem("nabd_lots")||"[]")}catch(e){}
+var LOTS=[];try{LOTS=JSON.parse(localStorage.getItem("chainbeat_lots")||"[]")}catch(e){}
 LOTS=(Array.isArray(LOTS)?LOTS:[]).filter(function(l){return l&&typeof l.s==="string"&&isFinite(l.a)&&l.a>0&&(l.p==null||(isFinite(l.p)&&l.p>=0))});
-function saveLots(){try{localStorage.setItem("nabd_lots",JSON.stringify(LOTS))}catch(e){}}
+function saveLots(){try{localStorage.setItem("chainbeat_lots",JSON.stringify(LOTS))}catch(e){}}
 function px(x){return x==="USDT"?1:D[x]?D[x].last:NaN}
 function opts(withUsdt){return(withUsdt?['<option value="USDT">USDT</option>']:[]).concat(order.map(function(s){return'<option value="'+s+'">'+s+" · "+esc(NAMES[s]||s)+"</option>"})).join("")}
 function fillSel(){if(!order.length||$("cFrom").options.length)return;$("cFrom").innerHTML=opts(1);$("cTo").innerHTML=opts(1);$("pCoin").innerHTML=opts(0);$("cFrom").value="BTC";$("cTo").value="USDT"}
@@ -145,8 +145,8 @@ $("navMarket").onclick=function(){setTab("all");go("/");window.scrollTo({top:0,b
 $("navFav").onclick=function(){setTab("fav");if(route==="home")$("marketSec").scrollIntoView({behavior:"smooth"})};
 $("navNews").onclick=function(){if(route!=="home"){go("/");setTimeout(function(){$("newsSec").scrollIntoView({behavior:"smooth"})},60)}else $("newsSec").scrollIntoView({behavior:"smooth"})};
 $("dBack").onclick=function(){go("/")};$("dFav").onclick=function(){toggleFav(sel)};
-$("theme").onclick=function(){var t=document.documentElement.dataset.theme==="light"?"dark":"light";document.documentElement.dataset.theme=t;try{localStorage.setItem("nabd_theme",t)}catch(e){}drawChart()};
-try{var th=localStorage.getItem("nabd_theme");if(th)document.documentElement.dataset.theme=th}catch(e){}
+$("theme").onclick=function(){var t=document.documentElement.dataset.theme==="light"?"dark":"light";document.documentElement.dataset.theme=t;try{localStorage.setItem("chainbeat_theme",t)}catch(e){}drawChart()};
+try{var th=localStorage.getItem("chainbeat_theme");if(th)document.documentElement.dataset.theme=th}catch(e){}
 var qi=$("q"),sg=$("sugg"),hl=-1;
 function suggest(){var q=qi.value.trim().toUpperCase();qtxt=q;if(route==="home"){shown=40;table()}if(!q){sg.hidden=true;return}
   var m=order.filter(function(s){return s.indexOf(q)>-1||(NAMES[s]||"").toUpperCase().indexOf(q)>-1}).slice(0,6);hl=-1;
@@ -201,7 +201,7 @@ news();setInterval(news,120000);
 
 (function(){
 var b=document.getElementById("visitsBody");if(!b)return;
-var isNew=1;try{if(localStorage.getItem("nabd_seen"))isNew=0}catch(e){}
+var isNew=1;try{if(localStorage.getItem("chainbeat_seen"))isNew=0}catch(e){}
 function flag(c){return String.fromCodePoint.apply(null,c.split("").map(function(x){return 127397+x.charCodeAt(0)}))}
 var dn;try{dn=new Intl.DisplayNames(["en"],{type:"region"})}catch(e){}
 function nm(c){try{return dn?dn.of(c):c}catch(e){return c}}
@@ -214,6 +214,6 @@ function draw(j){
   var d=j.since?j.since.slice(0,10):"";
   h+='<p class="note">Real counts, recorded since '+d+' (started from zero). The country comes from the visitor connection as seen by Cloudflare, and we do not store IP addresses. "Visitor" = a browser opening the site for the first time, not a specific person. Visits from known bots are not counted. Some of the first counts were test visits.</p>';
   b.innerHTML=h}
-var qa=false;try{if(/[?&]notrack=1/.test(location.search))localStorage.setItem("nabd_notrack","1");qa=localStorage.getItem("nabd_notrack")==="1"}catch(e){}
-(qa?fetch("/api/visits"):fetch("/api/visits",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({n:isNew})})).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(j&&!j.error){try{localStorage.setItem("nabd_seen","1")}catch(e){}}draw(j)}).catch(function(){draw(null)});
+var qa=false;try{if(/[?&]notrack=1/.test(location.search))localStorage.setItem("chainbeat_notrack","1");qa=localStorage.getItem("chainbeat_notrack")==="1"}catch(e){}
+(qa?fetch("/api/visits"):fetch("/api/visits",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({n:isNew})})).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(j&&!j.error){try{localStorage.setItem("chainbeat_seen","1")}catch(e){}}draw(j)}).catch(function(){draw(null)});
 })();
