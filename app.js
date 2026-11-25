@@ -224,3 +224,11 @@ function draw(j){
 var qa=false;try{if(/[?&]notrack=1/.test(location.search))localStorage.setItem("chainbeat_notrack","1");qa=localStorage.getItem("chainbeat_notrack")==="1"}catch(e){}
 (qa?fetch("/api/visits"):fetch("/api/visits",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({n:isNew})})).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(j&&!j.error){try{localStorage.setItem("chainbeat_seen","1")}catch(e){}}draw(j)}).catch(function(){draw(null)});
 })();
+
+(function(){var ids=["tBuy","tSell","tInv","tFee"];function n(i){var v=parseFloat(document.getElementById(i).value);return isFinite(v)?v:NaN}
+function f(x){return x.toLocaleString("en-US",{maximumFractionDigits:2})}
+function calc(){var r=document.getElementById("tRes");if(!r)return;var b=n("tBuy"),s=n("tSell"),inv=n("tInv"),fee=n("tFee");
+if(!(b>0)||!(s>0)||!(inv>0)||!(fee>=0)||fee>=100){r.textContent="Enter a buy price, a sell price and the amount.";return}
+var k=fee/100,qty=inv*(1-k)/b,gross=qty*s,out=gross*(1-k),pl=out-inv,pct=pl/inv*100,be=b/((1-k)*(1-k));
+r.innerHTML='Coins bought: <b class="num">'+qty.toLocaleString("en-US",{maximumFractionDigits:8})+'</b><br>You receive after fees: <b class="num">'+f(out)+' USDT</b><br>Profit/loss: <b class="num '+(pl>=0?"up":"down")+'">'+(pl>=0?"+":"")+f(pl)+' USDT ('+(pct>=0?"+":"")+pct.toFixed(2)+'%)</b><br>Total fees paid: <b class="num">'+f(inv*k+gross*k)+' USDT</b><br>Break-even sell price: <b class="num">'+f(be)+' USDT</b>'}
+ids.forEach(function(i){var e=document.getElementById(i);if(e)e.addEventListener("input",calc)});calc()})();
