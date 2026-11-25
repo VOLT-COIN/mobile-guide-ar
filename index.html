@@ -1,130 +1,130 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>نبض الكريبتو | أسعار العملات الرقمية وأخبارها</title>
-<meta name="description" content="أسعار مباشرة لأشهر العملات الرقمية من Binance مع شارتات وتفاصيل لكل عملة وبحث وأخبار من مصادر معروفة، ووقت آخر تحديث ظاهر.">
+<title>Chainbeat | Live Crypto Prices and News</title>
+<meta name="description" content="Live prices for popular cryptocurrencies from Binance, with charts, a page for each coin, search and headlines from known sources. The last update time is always shown.">
 <meta name="theme-color" content="#070b14">
 <link rel="icon" href="/logo.svg" type="image/svg+xml">
 <link rel="canonical" href="https://nabd-crypto.pages.dev/">
-<meta property="og:type" content="website"><meta property="og:site_name" content="نبض الكريبتو"><meta property="og:locale" content="ar_AR">
-<meta property="og:title" content="نبض الكريبتو | أسعار العملات الرقمية وأخبارها"><meta property="og:description" content="أسعار مباشرة لأشهر العملات الرقمية من Binance مع شارتات وتفاصيل لكل عملة وبحث وأخبار من مصادر معروفة، ووقت آخر تحديث ظاهر."><meta property="og:url" content="https://nabd-crypto.pages.dev/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Chainbeat"><meta property="og:locale" content="en_US">
+<meta property="og:title" content="Chainbeat | Live Crypto Prices and News"><meta property="og:description" content="Live prices for popular cryptocurrencies from Binance, with charts, a page for each coin, search and headlines from known sources. The last update time is always shown."><meta property="og:url" content="https://nabd-crypto.pages.dev/">
 <meta name="twitter:card" content="summary">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"نبض الكريبتو","url":"https://nabd-crypto.pages.dev/","inLanguage":"ar"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Chainbeat","url":"https://nabd-crypto.pages.dev/","inLanguage":"en"}</script>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <header class="top">
   <div class="bar">
-    <a class="logo" href="/" aria-label="نبض الكريبتو">
+    <a class="logo" href="/" aria-label="Chainbeat">
       <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2dd4bf"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="#0b1220"/><rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="url(#lg)" stroke-width="3"/><path d="M8 36h12l6-16 8 26 6-14 3 4h13" fill="none" stroke="url(#lg)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="53" cy="36" r="3.2" fill="#2dd4bf"/></svg>
-      <b>نبض الكريبتو</b>
+      <b>Chainbeat</b>
     </a>
-    <nav class="nav" aria-label="التنقل">
-      <button id="navMarket" class="on">السوق</button><button id="navFav">★ المفضلة</button><button id="navTools">الأدوات</button><button id="navNews">الأخبار</button>
+    <nav class="nav" aria-label="Main navigation">
+      <button id="navMarket" class="on">Market</button><button id="navFav">★ Favorites</button><button id="navTools">Tools</button><button id="navNews">News</button>
     </nav>
-    <div class="search"><input id="q" type="search" placeholder="ابحث عن عملة (BTC, ETH, SOL...)" autocomplete="off" aria-label="بحث عن عملة"><div id="sugg" class="sugg" hidden></div></div>
-    <div id="status" class="pill wait" role="status"><span class="dot"></span><span id="statusText">جارٍ الاتصال...</span></div>
-    <button id="theme" class="iconbtn" aria-label="تبديل الوضع الفاتح والداكن" title="تبديل الوضع">◐</button>
+    <div class="search"><input id="q" type="search" placeholder="Search coins (BTC, ETH, SOL...)" autocomplete="off" aria-label="Search coins"><div id="sugg" class="sugg" hidden></div></div>
+    <div id="status" class="pill wait" role="status"><span class="dot"></span><span id="statusText">Connecting...</span></div>
+    <button id="theme" class="iconbtn" aria-label="Toggle light and dark mode" title="Toggle theme">◐</button>
   </div>
 </header>
 <div id="banner" class="banner" hidden></div>
 <main>
   <div id="home" class="home">
-    <section class="intro"><h1>أسعار العملات الرقمية مباشرة</h1><p>نبض الكريبتو يعرض أسعار أبرز العملات الرقمية مقابل USDT من Binance مع شارتات وتفاصيل لكل عملة وأخبار من مصادر معروفة. للمعلومات فقط وليس نصيحة استثمارية، والموقع أُنشئ بمساعدة الذكاء الاصطناعي.</p></section>
+    <section class="intro"><h1>Live Cryptocurrency Prices</h1><p>Chainbeat shows live prices of major cryptocurrencies against USDT from Binance, with charts, a page for each coin and headlines from known sources. For information only, not investment advice. This site was created with the help of AI.</p></section>
     <div class="stats" id="stats"></div>
     <section class="hero" id="cards">
       <div class="card sk"></div><div class="card sk"></div><div class="card sk"></div><div class="card sk"></div>
     </section>
 
     <section class="panel">
-      <div class="ph"><h2>خريطة السوق <small>اللون = تغيّر 24 ساعة. أعلى 40 عملة متتبَّعة بحجم التداول (المربعات متساوية الحجم)</small></h2></div>
+      <div class="ph"><h2>Market Heatmap <small>Color = 24h change. Top 40 tracked coins by volume (tiles are equal size)</small></h2></div>
       <div class="heat" id="heat"></div>
     </section>
 
     <section class="panel" id="marketSec">
-      <div class="ph"><h2>السوق <small>العملات المتتبَّعة على Binance، الأسعار مقابل USDT</small></h2><div class="meta">آخر تحديث للأسعار: <b id="lastTick">—</b></div></div>
+      <div class="ph"><h2>Market <small>Coins tracked on Binance, prices in USDT</small></h2><div class="meta">Last price update: <b id="lastTick">—</b></div></div>
       <div class="toolbar">
-        <div class="tabs" id="tabs"><button data-t="all" class="on">الكل</button><button data-t="gain">الرابحون</button><button data-t="lose">الخاسرون</button><button data-t="fav">★ المفضلة</button></div>
+        <div class="tabs" id="tabs"><button data-t="all" class="on">All</button><button data-t="gain">Gainers</button><button data-t="lose">Losers</button><button data-t="fav">★ Favorites</button></div>
         <div class="meta" id="count"></div>
       </div>
       <div class="wrap"><table>
-        <thead><tr><th></th><th class="hm">#</th><th class="s" data-k="name">العملة</th><th class="s" data-k="last">السعر (USDT)</th><th class="s" data-k="pct">24 ساعة</th><th class="s hm" data-k="p7">7 أيام</th><th class="hm">أعلى 24س</th><th class="hm">أدنى 24س</th><th class="s hm" data-k="vol">حجم التداول (USDT)</th><th class="hm">آخر 7 أيام</th><th class="hm"></th></tr></thead>
-        <tbody id="rows"><tr><td colspan="11" class="empty">جارٍ التحميل...</td></tr></tbody>
+        <thead><tr><th></th><th class="hm">#</th><th class="s" data-k="name">Coin</th><th class="s" data-k="last">Price (USDT)</th><th class="s" data-k="pct">24h</th><th class="s hm" data-k="p7">7d</th><th class="hm">24h High</th><th class="hm">24h Low</th><th class="s hm" data-k="vol">Volume (USDT)</th><th class="hm">Last 7 days</th><th class="hm"></th></tr></thead>
+        <tbody id="rows"><tr><td colspan="11" class="empty">Loading...</td></tr></tbody>
       </table></div>
-      <div class="more"><button class="btn" id="more" hidden>عرض المزيد</button></div>
-      <p class="note">المصدر: واجهة بيانات السوق العامة من Binance. الترتيب (#) بحجم التداول لأن القيمة السوقية غير متاحة من هذا المصدر. الأسعار أسعار تداول Binance وقد تختلف قليلًا عن منصات أخرى. الأسعار والأحجام بوحدة USDT (عملة Tether المستقرة) وليست بالدولار الأمريكي بالضبط. أعداد الصاعد/الهابط تخص العملات المتتبَّعة فقط وليست السوق كله. تغيّر 7 أيام يُحسب من شموع الساعة وقد يظهر "—" حتى يصل.</p>
+      <div class="more"><button class="btn" id="more" hidden>Show more</button></div>
+      <p class="note">Source: Binance public market data API. Rank (#) is by trading volume because market cap is not available from this source. Prices are Binance trading prices and may differ slightly from other exchanges. Prices and volumes are in USDT (the Tether stablecoin), which is not exactly US dollars. Up/Down counts cover tracked coins only, not the whole market. The 7d change is computed from hourly candles and may show "—" until they load.</p>
     </section>
 
     <section class="panel" id="newsSec">
-      <div class="ph"><h2>آخر الأخبار</h2><div class="meta">آخر فحص: <b id="lastNews">—</b> <span id="newsState"></span></div></div>
+      <div class="ph"><h2>Latest News</h2><div class="meta">Last checked: <b id="lastNews">—</b> <span id="newsState"></span></div></div>
       <div class="chips" id="chips"></div>
       <div id="news" class="newsgrid"><div class="item sk"></div><div class="item sk"></div><div class="item sk"></div><div class="item sk"></div></div>
-      <p class="note">عناوين وروابط فقط من خلاصات RSS العامة لـ Cointelegraph وCoinDesk وDecrypt وBitcoin Magazine، بعناوينها الأصلية بلا ترجمة. نعرض ما يتعلق بالعملات الرقمية فقط (تصفية بكلمات مفتاحية في العنوان والتصنيف). يجلب الخادم الخلاصات مرة كل 5 دقائق تقريبًا، وتاريخ كل خبر هو تاريخ نشره عند المصدر. حقوق الأخبار لأصحابها.</p>
+      <p class="note">Headlines and links only, from the public RSS feeds of Cointelegraph, CoinDesk, Decrypt and Bitcoin Magazine. We show only crypto-related items (keyword filter on the title and category). The server fetches the feeds about every 5 minutes, and each date is the date the source published the item. News rights belong to their owners.</p>
     </section>
   </div>
 
-  <nav class="coinlinks" id="coinlinks" aria-label="صفحات العملات"><h2>صفحات العملات</h2><a href="/coin/BTC">Bitcoin (BTC)</a><a href="/coin/ETH">Ethereum (ETH)</a><a href="/coin/BNB">BNB (BNB)</a><a href="/coin/SOL">Solana (SOL)</a><a href="/coin/XRP">XRP (XRP)</a><a href="/coin/ADA">Cardano (ADA)</a><a href="/coin/DOGE">Dogecoin (DOGE)</a><a href="/coin/TRX">TRON (TRX)</a><a href="/coin/LTC">Litecoin (LTC)</a><a href="/coin/AVAX">Avalanche (AVAX)</a><a href="/coin/DOT">Polkadot (DOT)</a><a href="/coin/LINK">Chainlink (LINK)</a><a href="/coin/POL">Polygon (POL)</a><a href="/coin/SHIB">Shiba Inu (SHIB)</a><a href="/coin/BCH">Bitcoin Cash (BCH)</a><a href="/coin/NEAR">NEAR (NEAR)</a><a href="/coin/UNI">Uniswap (UNI)</a><a href="/coin/ATOM">Cosmos (ATOM)</a><a href="/coin/XLM">Stellar (XLM)</a><a href="/coin/ETC">Ethereum Classic (ETC)</a><a href="/coin/FIL">Filecoin (FIL)</a><a href="/coin/APT">Aptos (APT)</a><a href="/coin/ARB">Arbitrum (ARB)</a><a href="/coin/OP">Optimism (OP)</a><a href="/coin/SUI">Sui (SUI)</a><a href="/coin/PEPE">Pepe (PEPE)</a><a href="/coin/AAVE">Aave (AAVE)</a><a href="/coin/INJ">Injective (INJ)</a><a href="/coin/HBAR">Hedera (HBAR)</a><a href="/coin/ICP">Internet Computer (ICP)</a><a href="/coin/ZEC">Zcash (ZEC)</a><a href="/coin/HYPE">Hyperliquid (HYPE)</a><a href="/coin/TAO">Bittensor (TAO)</a><a href="/coin/RENDER">Render (RENDER)</a><a href="/coin/FET">Fetch.ai (FET)</a><a href="/coin/IMX">Immutable (IMX)</a><a href="/coin/GRT">The Graph (GRT)</a><a href="/coin/ALGO">Algorand (ALGO)</a><a href="/coin/VET">VeChain (VET)</a><a href="/coin/SAND">The Sandbox (SAND)</a><a href="/coin/MANA">Decentraland (MANA)</a><a href="/coin/CRV">Curve (CRV)</a><a href="/coin/LDO">Lido DAO (LDO)</a><a href="/coin/RUNE">THORChain (RUNE)</a><a href="/coin/SEI">Sei (SEI)</a><a href="/coin/TIA">Celestia (TIA)</a><a href="/coin/WLD">Worldcoin (WLD)</a><a href="/coin/ENA">Ethena (ENA)</a><a href="/coin/JUP">Jupiter (JUP)</a><a href="/coin/ONDO">Ondo (ONDO)</a><a href="/coin/PENDLE">Pendle (PENDLE)</a><a href="/coin/BONK">Bonk (BONK)</a><a href="/coin/WIF">dogwifhat (WIF)</a><a href="/coin/FLOKI">Floki (FLOKI)</a><a href="/coin/XTZ">Tezos (XTZ)</a><a href="/coin/THETA">Theta (THETA)</a><a href="/coin/AXS">Axie Infinity (AXS)</a><a href="/coin/GALA">Gala (GALA)</a><a href="/coin/CAKE">PancakeSwap (CAKE)</a><a href="/coin/QNT">Quant (QNT)</a><a href="/coin/STX">Stacks (STX)</a><a href="/coin/EGLD">MultiversX (EGLD)</a><a href="/coin/S">Sonic (S)</a><a href="/coin/PAXG">PAX Gold (PAXG)</a><a href="/coin/ENS">ENS (ENS)</a><a href="/coin/COMP">Compound (COMP)</a><a href="/coin/SNX">Synthetix (SNX)</a><a href="/coin/DYDX">dYdX (DYDX)</a><a href="/coin/TRUMP">Official Trump (TRUMP)</a><a href="/coin/WLFI">World Liberty (WLFI)</a><a href="/coin/PUMP">Pump.fun (PUMP)</a></nav>
+  <nav class="coinlinks" id="coinlinks" aria-label="Coin pages"><h2>Coin pages</h2><a href="/coin/BTC">Bitcoin (BTC)</a><a href="/coin/ETH">Ethereum (ETH)</a><a href="/coin/BNB">BNB (BNB)</a><a href="/coin/SOL">Solana (SOL)</a><a href="/coin/XRP">XRP (XRP)</a><a href="/coin/ADA">Cardano (ADA)</a><a href="/coin/DOGE">Dogecoin (DOGE)</a><a href="/coin/TRX">TRON (TRX)</a><a href="/coin/LTC">Litecoin (LTC)</a><a href="/coin/AVAX">Avalanche (AVAX)</a><a href="/coin/DOT">Polkadot (DOT)</a><a href="/coin/LINK">Chainlink (LINK)</a><a href="/coin/POL">Polygon (POL)</a><a href="/coin/SHIB">Shiba Inu (SHIB)</a><a href="/coin/BCH">Bitcoin Cash (BCH)</a><a href="/coin/NEAR">NEAR (NEAR)</a><a href="/coin/UNI">Uniswap (UNI)</a><a href="/coin/ATOM">Cosmos (ATOM)</a><a href="/coin/XLM">Stellar (XLM)</a><a href="/coin/ETC">Ethereum Classic (ETC)</a><a href="/coin/FIL">Filecoin (FIL)</a><a href="/coin/APT">Aptos (APT)</a><a href="/coin/ARB">Arbitrum (ARB)</a><a href="/coin/OP">Optimism (OP)</a><a href="/coin/SUI">Sui (SUI)</a><a href="/coin/PEPE">Pepe (PEPE)</a><a href="/coin/AAVE">Aave (AAVE)</a><a href="/coin/INJ">Injective (INJ)</a><a href="/coin/HBAR">Hedera (HBAR)</a><a href="/coin/ICP">Internet Computer (ICP)</a><a href="/coin/ZEC">Zcash (ZEC)</a><a href="/coin/HYPE">Hyperliquid (HYPE)</a><a href="/coin/TAO">Bittensor (TAO)</a><a href="/coin/RENDER">Render (RENDER)</a><a href="/coin/FET">Fetch.ai (FET)</a><a href="/coin/IMX">Immutable (IMX)</a><a href="/coin/GRT">The Graph (GRT)</a><a href="/coin/ALGO">Algorand (ALGO)</a><a href="/coin/VET">VeChain (VET)</a><a href="/coin/SAND">The Sandbox (SAND)</a><a href="/coin/MANA">Decentraland (MANA)</a><a href="/coin/CRV">Curve (CRV)</a><a href="/coin/LDO">Lido DAO (LDO)</a><a href="/coin/RUNE">THORChain (RUNE)</a><a href="/coin/SEI">Sei (SEI)</a><a href="/coin/TIA">Celestia (TIA)</a><a href="/coin/WLD">Worldcoin (WLD)</a><a href="/coin/ENA">Ethena (ENA)</a><a href="/coin/JUP">Jupiter (JUP)</a><a href="/coin/ONDO">Ondo (ONDO)</a><a href="/coin/PENDLE">Pendle (PENDLE)</a><a href="/coin/BONK">Bonk (BONK)</a><a href="/coin/WIF">dogwifhat (WIF)</a><a href="/coin/FLOKI">Floki (FLOKI)</a><a href="/coin/XTZ">Tezos (XTZ)</a><a href="/coin/THETA">Theta (THETA)</a><a href="/coin/AXS">Axie Infinity (AXS)</a><a href="/coin/GALA">Gala (GALA)</a><a href="/coin/CAKE">PancakeSwap (CAKE)</a><a href="/coin/QNT">Quant (QNT)</a><a href="/coin/STX">Stacks (STX)</a><a href="/coin/EGLD">MultiversX (EGLD)</a><a href="/coin/S">Sonic (S)</a><a href="/coin/PAXG">PAX Gold (PAXG)</a><a href="/coin/ENS">ENS (ENS)</a><a href="/coin/COMP">Compound (COMP)</a><a href="/coin/SNX">Synthetix (SNX)</a><a href="/coin/DYDX">dYdX (DYDX)</a><a href="/coin/TRUMP">Official Trump (TRUMP)</a><a href="/coin/WLFI">World Liberty (WLFI)</a><a href="/coin/PUMP">Pump.fun (PUMP)</a></nav>
   <div id="det" class="det">
-    <div class="crumb"><a href="/">السوق</a><span>›</span><span id="crumbName">—</span></div>
+    <div class="crumb"><a href="/">Market</a><span>›</span><span id="crumbName">—</span></div>
     <section class="panel">
       <div class="dhead">
         <div class="dtitle"><div class="ico" id="dIco">—</div><div><h1 id="dName">—</h1><small id="dSub"></small></div></div>
         <p class="note" id="dIntro"></p>
-        <div style="text-align:left"><div class="big"><span id="dPrice" class="num">—</span><span id="dChg" class="num chg"></span></div></div>
-        <div style="display:flex;gap:8px"><button class="btn fav" id="dFav">☆ أضف للمفضلة</button><button class="btn" id="dBack">← رجوع للسوق</button></div>
+        <div style="text-align:right"><div class="big"><span id="dPrice" class="num">—</span><span id="dChg" class="num chg"></span></div></div>
+        <div style="display:flex;gap:8px"><button class="btn fav" id="dFav">☆ Add to favorites</button><button class="btn" id="dBack">← Back to market</button></div>
       </div>
       <div class="ctl">
-        <div class="seg" id="range"><button data-r="1D" class="on">24 ساعة</button><button data-r="7D">7 أيام</button><button data-r="1M">شهر</button><button data-r="3M">3 شهور</button><button data-r="1Y">سنة</button></div>
-        <div class="seg" id="ctype"><button data-c="line" class="on">خط</button><button data-c="candle">شموع</button></div>
+        <div class="seg" id="range"><button data-r="1D" class="on">24h</button><button data-r="7D">7d</button><button data-r="1M">1M</button><button data-r="3M">3M</button><button data-r="1Y">1Y</button></div>
+        <div class="seg" id="ctype"><button data-c="line" class="on">Line</button><button data-c="candle">Candles</button></div>
       </div>
-      <div class="chartbox"><canvas id="chart"></canvas><div id="tip" class="tip" hidden></div><div id="chartMsg" class="chartmsg">جارٍ تحميل الشارت...</div></div>
-      <p class="note">بيانات الشموع من Binance (مقابل USDT). آخر شمعة تتحدث مع السعر المباشر. مرّر المؤشر أو اللمس على الشارت لرؤية القيم.</p>
+      <div class="chartbox"><canvas id="chart"></canvas><div id="tip" class="tip" hidden></div><div id="chartMsg" class="chartmsg">Loading chart...</div></div>
+      <p class="note">Candle data from Binance (against USDT). The last candle updates with the live price. Hover or touch the chart to see values.</p>
     </section>
     <section class="panel">
-      <div class="ph"><h2>إحصاءات <small id="rangeLbl"></small></h2></div>
+      <div class="ph"><h2>Statistics <small id="rangeLbl"></small></h2></div>
       <div class="sgrid" id="sgrid"></div>
-      <p class="note">القيمة السوقية، العرض المتداول وأعلى سعر تاريخي غير متاحة من مصدر Binance، لذلك لا نعرضها بدل تقديرها.</p>
+      <p class="note">Market cap, circulating supply and all-time high are not available from the Binance source, so we do not show them instead of estimating them.</p>
     </section>
     <section class="panel">
-      <div class="ph"><h2>أخبار عن <span id="nName"></span></h2></div>
+      <div class="ph"><h2>News about <span id="nName"></span></h2></div>
       <div id="dNews" class="newsgrid"></div>
     </section>
   </div>
   <div id="tools" class="det">
-    <div class="crumb"><a href="/">السوق</a><span>›</span><span>الأدوات</span></div>
+    <div class="crumb"><a href="/">Market</a><span>›</span><span>Tools</span></div>
     <div class="banner err" id="tStale" hidden></div>
     <section class="panel">
-      <div class="ph"><h2>محوّل العملات <small>بأسعار Binance الحالية (USDT)</small></h2></div>
+      <div class="ph"><h2>Converter <small>Using current Binance prices (USDT)</small></h2></div>
       <div class="form">
-        <label>المبلغ<input id="cAmt" type="number" inputmode="decimal" min="0" step="any" value="1"></label>
-        <label>من<select id="cFrom"></select></label>
-        <button class="btn" id="cSwap" aria-label="عكس">⇄</button>
-        <label>إلى<select id="cTo"></select></label>
+        <label>Amount<input id="cAmt" type="number" inputmode="decimal" min="0" step="any" value="1"></label>
+        <label>From<select id="cFrom"></select></label>
+        <button class="btn" id="cSwap" aria-label="Swap">⇄</button>
+        <label>To<select id="cTo"></select></label>
       </div>
       <div class="result" id="cRes">—</div>
-      <p class="note">التحويل يمر عبر أسعار USDT على Binance، فهو تقريبي ولا يشمل رسوم أو فروق سعر منصات التحويل.</p>
+      <p class="note">Conversion goes through USDT prices on Binance, so it is approximate and does not include exchange fees or spreads.</p>
     </section>
     <section class="panel">
-      <div class="ph"><h2>محفظتي <small>تُحفظ في متصفحك فقط</small></h2></div>
+      <div class="ph"><h2>My Portfolio <small>Saved in your browser only</small></h2></div>
       <div class="form">
-        <label>العملة<select id="pCoin"></select></label>
-        <label>الكمية<input id="pAmt" type="number" inputmode="decimal" min="0" step="any" placeholder="0.5"></label>
-        <label>سعر الشراء (USDT) اختياري<input id="pPrice" type="number" inputmode="decimal" min="0" step="any" placeholder="مثال 60000"></label>
-        <button class="btn primary" id="pAdd">إضافة</button>
+        <label>Coin<select id="pCoin"></select></label>
+        <label>Amount<input id="pAmt" type="number" inputmode="decimal" min="0" step="any" placeholder="0.5"></label>
+        <label>Buy price (USDT), optional<input id="pPrice" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 60000"></label>
+        <button class="btn primary" id="pAdd">Add</button>
       </div>
       <div id="pMsg" class="note"></div>
       <div class="pcards" id="pRows"></div>
       <div class="ptotal" id="pTotal"></div>
-      <p class="note">الأرقام تُحسب في متصفحك من أسعار Binance الحالية، وليست كشف حساب ولا نصيحة استثمارية. الربح/الخسارة يشمل الصفقات التي أدخلت لها سعر شراء فقط. لا تُرسل المحفظة إلى أي خادم؛ مسح بيانات المتصفح يحذفها.</p>
+      <p class="note">Numbers are computed in your browser from current Binance prices. They are not an account statement or investment advice. Profit/loss only covers entries where you typed a buy price. The portfolio is never sent to a server; clearing browser data deletes it.</p>
     </section>
   </div>
 </main>
 <footer>
-  <section id="visits" aria-label="إحصاءات الزوار"><h2>زوّار الموقع</h2><div id="visitsBody" class="vis-state">جارٍ التحميل…</div></section>
-  <p>للمعلومات فقط وليس نصيحة استثمارية. التداول بالعملات الرقمية فيه مخاطرة عالية.</p>
-  <p>أُنشئ الموقع بمساعدة الذكاء الاصطناعي، والبيانات تصل تلقائيًا من المصادر المذكورة. <a href="/about">عن الموقع</a> · <a href="/privacy">الخصوصية</a></p>
+  <section id="visits" aria-label="Visitor statistics"><h2>Site visitors</h2><div id="visitsBody" class="vis-state">Loading…</div></section>
+  <p>For information only, not investment advice. Trading cryptocurrencies carries high risk.</p>
+  <p>This site was created with the help of AI, and data arrives automatically from the sources named. <a href="/about">About</a> · <a href="/privacy">Privacy</a></p>
 </footer>
 <script src="/app.js"></script>
 </body>
