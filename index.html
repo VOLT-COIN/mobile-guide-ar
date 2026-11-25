@@ -4,49 +4,81 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>نبض الكريبتو | أسعار العملات الرقمية وأخبارها</title>
-<meta name="description" content="أسعار مباشرة لأشهر العملات الرقمية من Binance مع شارتات وبحث وأخبار من مصادر معروفة، ووقت آخر تحديث ظاهر.">
+<meta name="description" content="أسعار مباشرة لأشهر العملات الرقمية من Binance مع شارتات وتفاصيل لكل عملة وبحث وأخبار من مصادر معروفة، ووقت آخر تحديث ظاهر.">
+<meta name="theme-color" content="#070b14">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="top">
   <div class="bar">
-    <a class="logo" href="./"><span class="mark">◆</span> نبض الكريبتو</a>
-    <div class="search"><input id="q" type="search" placeholder="ابحث عن عملة (BTC, ETH, SOL...)" autocomplete="off" aria-label="بحث عن عملة"></div>
+    <a class="logo" href="#/" aria-label="نبض الكريبتو">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2dd4bf"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="#0b1220"/><rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="url(#lg)" stroke-width="3"/><path d="M8 36h12l6-16 8 26 6-14 3 4h13" fill="none" stroke="url(#lg)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="53" cy="36" r="3.2" fill="#2dd4bf"/></svg>
+      <b>نبض الكريبتو</b>
+    </a>
+    <nav class="nav" aria-label="التنقل">
+      <button id="navMarket" class="on">السوق</button><button id="navFav">★ المفضلة</button><button id="navNews">الأخبار</button>
+    </nav>
+    <div class="search"><input id="q" type="search" placeholder="ابحث عن عملة (BTC, ETH, SOL...)" autocomplete="off" aria-label="بحث عن عملة"><div id="sugg" class="sugg" hidden></div></div>
     <div id="status" class="pill wait" role="status"><span class="dot"></span><span id="statusText">جارٍ الاتصال...</span></div>
+    <button id="theme" class="iconbtn" aria-label="تبديل الوضع الفاتح والداكن" title="تبديل الوضع">◐</button>
   </div>
 </header>
 <div id="banner" class="banner" hidden></div>
 <main>
-  <section class="cards" id="cards">
-    <div class="card sk"></div><div class="card sk"></div><div class="card sk"></div><div class="card sk"></div>
-  </section>
+  <div id="home" class="home">
+    <div class="stats" id="stats"></div>
+    <section class="hero" id="cards">
+      <div class="card sk"></div><div class="card sk"></div><div class="card sk"></div><div class="card sk"></div>
+    </section>
 
-  <section class="panel chart-panel">
-    <div class="ph">
-      <div><h2 id="cName">—</h2><div class="big"><span id="cPrice" class="num">—</span> <span id="cChg" class="num chg"></span></div></div>
-      <div class="seg" id="range">
-        <button data-r="1D" class="on">يوم</button><button data-r="7D">أسبوع</button><button data-r="1M">شهر</button><button data-r="1Y">سنة</button>
+    <section class="panel" id="marketSec">
+      <div class="ph"><h2>السوق <small>العملات المتتبَّعة على Binance، الأسعار مقابل USDT</small></h2><div class="meta">آخر تحديث للأسعار: <b id="lastTick">—</b></div></div>
+      <div class="toolbar">
+        <div class="tabs" id="tabs"><button data-t="all" class="on">الكل</button><button data-t="gain">الرابحون</button><button data-t="lose">الخاسرون</button><button data-t="fav">★ المفضلة</button></div>
+        <div class="meta" id="count"></div>
       </div>
-    </div>
-    <div class="chartbox"><canvas id="chart"></canvas><div id="tip" class="tip" hidden></div><div id="chartMsg" class="chartmsg">جارٍ تحميل الشارت...</div></div>
-    <p class="note">شارت الشموع من Binance (سعر الإغلاق لكل فترة). آخر نقطة تتحدث مع السعر المباشر.</p>
-  </section>
+      <div class="wrap"><table>
+        <thead><tr><th></th><th>#</th><th class="s" data-k="name">العملة</th><th class="s" data-k="last">السعر (USDT)</th><th class="s" data-k="pct">24 ساعة</th><th class="s hm" data-k="p7">7 أيام</th><th class="hm">أعلى 24س</th><th class="hm">أدنى 24س</th><th class="s hm" data-k="vol">حجم التداول (USDT)</th><th class="hm">آخر 7 أيام</th><th></th></tr></thead>
+        <tbody id="rows"><tr><td colspan="11" class="empty">جارٍ التحميل...</td></tr></tbody>
+      </table></div>
+      <div class="more"><button class="btn" id="more" hidden>عرض المزيد</button></div>
+      <p class="note">المصدر: واجهة بيانات السوق العامة من Binance. الترتيب (#) بحجم التداول لأن القيمة السوقية غير متاحة من هذا المصدر. الأسعار أسعار تداول Binance وقد تختلف قليلًا عن منصات أخرى. الأسعار والأحجام بوحدة USDT (عملة Tether المستقرة) وليست بالدولار الأمريكي بالضبط. أعداد الصاعد/الهابط تخص العملات المتتبَّعة فقط وليست السوق كله. تغيّر 7 أيام يُحسب من شموع الساعة وقد يظهر "—" حتى يصل.</p>
+    </section>
 
-  <section class="panel">
-    <div class="ph"><h2>السوق <small>أبرز العملات مرتبة بحجم التداول على Binance (مقابل USDT)</small></h2><div class="meta">آخر تحديث للأسعار: <b id="lastTick">—</b></div></div>
-    <div class="wrap"><table>
-      <thead><tr><th>#</th><th>العملة</th><th>السعر (USDT)</th><th>24 ساعة</th><th class="hm">أعلى 24س</th><th class="hm">أدنى 24س</th><th class="hm">حجم التداول (USDT)</th><th class="hm">آخر 24س</th></tr></thead>
-      <tbody id="rows"><tr><td colspan="8" class="empty">جارٍ التحميل...</td></tr></tbody>
-    </table></div>
-    <p class="note">المصدر: واجهة بيانات السوق العامة من Binance. الأسعار أسعار تداول Binance وقد تختلف قليلًا عن منصات أخرى. الأسعار والأحجام بوحدة USDT (عملة Tether المستقرة) وليست بالدولار الأمريكي بالضبط. الأعداد المعروضة (صاعد/هابط) تخص العملات المتتبَّعة فقط وليست السوق كله.</p>
-  </section>
+    <section class="panel" id="newsSec">
+      <div class="ph"><h2>آخر الأخبار</h2><div class="meta">آخر فحص: <b id="lastNews">—</b> <span id="newsState"></span></div></div>
+      <div class="chips" id="chips"></div>
+      <div id="news" class="newsgrid"><div class="item sk"></div><div class="item sk"></div><div class="item sk"></div><div class="item sk"></div></div>
+      <p class="note">عناوين وروابط فقط من خلاصات RSS العامة لـ Cointelegraph وCoinDesk وDecrypt وBitcoin Magazine، بعناوينها الأصلية بلا ترجمة. نعرض ما يتعلق بالعملات الرقمية فقط (تصفية بكلمات مفتاحية في العنوان والتصنيف). يجلب الخادم الخلاصات مرة كل 5 دقائق تقريبًا، وتاريخ كل خبر هو تاريخ نشره عند المصدر. حقوق الأخبار لأصحابها.</p>
+    </section>
+  </div>
 
-  <section class="panel">
-    <div class="ph"><h2>آخر الأخبار</h2><div class="meta">آخر فحص: <b id="lastNews">—</b> <span id="newsState"></span></div></div>
-    <div class="chips" id="chips"></div>
-    <div id="news" class="newsgrid"><div class="item sk"></div><div class="item sk"></div><div class="item sk"></div><div class="item sk"></div></div>
-    <p class="note">عناوين وروابط فقط من خلاصات RSS العامة لـ Cointelegraph وCoinDesk وDecrypt وBitcoin Magazine، بعناوينها الأصلية بلا ترجمة. نعرض ما يتعلق بالعملات الرقمية فقط (تصفية بكلمات مفتاحية في العنوان والتصنيف). يجلب الخادم الخلاصات مرة كل 5 دقائق تقريبًا، وتاريخ كل خبر هو تاريخ نشره عند المصدر. حقوق الأخبار لأصحابها.</p>
-  </section>
+  <div id="det" class="det">
+    <div class="crumb"><a href="#/">السوق</a><span>›</span><span id="crumbName">—</span></div>
+    <section class="panel">
+      <div class="dhead">
+        <div class="dtitle"><div class="ico" id="dIco">—</div><div><h1 id="dName">—</h1><small id="dSub"></small></div></div>
+        <div style="text-align:left"><div class="big"><span id="dPrice" class="num">—</span><span id="dChg" class="num chg"></span></div></div>
+        <div style="display:flex;gap:8px"><button class="btn fav" id="dFav">☆ أضف للمفضلة</button><button class="btn" id="dBack">← رجوع للسوق</button></div>
+      </div>
+      <div class="ctl">
+        <div class="seg" id="range"><button data-r="1D" class="on">24 ساعة</button><button data-r="7D">7 أيام</button><button data-r="1M">شهر</button><button data-r="3M">3 شهور</button><button data-r="1Y">سنة</button></div>
+        <div class="seg" id="ctype"><button data-c="line" class="on">خط</button><button data-c="candle">شموع</button></div>
+      </div>
+      <div class="chartbox"><canvas id="chart"></canvas><div id="tip" class="tip" hidden></div><div id="chartMsg" class="chartmsg">جارٍ تحميل الشارت...</div></div>
+      <p class="note">بيانات الشموع من Binance (مقابل USDT). آخر شمعة تتحدث مع السعر المباشر. مرّر المؤشر أو اللمس على الشارت لرؤية القيم.</p>
+    </section>
+    <section class="panel">
+      <div class="ph"><h2>إحصاءات <small id="rangeLbl"></small></h2></div>
+      <div class="sgrid" id="sgrid"></div>
+      <p class="note">القيمة السوقية، العرض المتداول وأعلى سعر تاريخي غير متاحة من مصدر Binance، لذلك لا نعرضها بدل تقديرها.</p>
+    </section>
+    <section class="panel">
+      <div class="ph"><h2>أخبار عن <span id="nName"></span></h2></div>
+      <div id="dNews" class="newsgrid"></div>
+    </section>
+  </div>
 </main>
 <footer>
   <p>للمعلومات فقط وليس نصيحة استثمارية. التداول بالعملات الرقمية فيه مخاطرة عالية.</p>
