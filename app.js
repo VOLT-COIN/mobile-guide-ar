@@ -60,7 +60,7 @@ function showRoute(){var m=/^#\/coin\/([A-Z0-9]+)/.exec(location.hash);
 function openCoin(s){location.hash="#/coin/"+s}
 function loadTick(){var s=sel;fetch(BASE+"/api/v3/ticker/24hr?symbol="+s+"USDT").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(s===sel){tick24=j;tickAt=Date.now();stats()}}).catch(function(){tick24={};stats()})}
 function head(){var d=D[sel];if(!d)return;$("dName").textContent=NAMES[sel]||sel;$("dSub").textContent=sel+"/USDT · المرتبة "+rk(sel)+" بحجم التداول";$("crumbName").textContent=NAMES[sel]||sel;$("nName").textContent=NAMES[sel]||sel;
-  $("dIco").textContent=sel.slice(0,4);$("dIco").style.background=icoCol(sel);$("dPrice").textContent=fmt(d.last)+" USDT";var e=$("dChg");e.innerHTML=pc(d.pct)+' <small>24 ساعة</small>';e.className="num chg "+(d.pct>=0?"up":"down");
+  $("dIco").textContent=sel.slice(0,4);$("dIco").style.background=icoCol(sel);$("dPrice").textContent=fmt(d.last)+" USDT";var e=$("dChg");e.innerHTML='<span class="num">'+pc(d.pct)+'</span> <small>24 ساعة</small>';e.className="chg "+(d.pct>=0?"up":"down");
   var f=$("dFav");f.className="btn fav"+(isFav(sel)?" on":"");f.textContent=isFav(sel)?"★ في المفضلة":"☆ أضف للمفضلة"}
 function stats(){var d=D[sel];if(!d)return;var t=tick24&&tick24.symbol===sel+"USDT"?tick24:null;var rs=series.length>1?series:null;
   function c(l,v,cl){return'<div class="card"><div class="l">'+l+'</div><div class="v '+(cl||"")+'">'+v+"</div></div>"}
