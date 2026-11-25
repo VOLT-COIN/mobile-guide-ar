@@ -201,7 +201,7 @@ news();setInterval(news,120000);
 
 (function(){
 var b=document.getElementById("visitsBody");if(!b)return;
-var isNew=1;try{if(localStorage.getItem("nabd_seen")){isNew=0}else{localStorage.setItem("nabd_seen","1")}}catch(e){}
+var isNew=1;try{if(localStorage.getItem("nabd_seen"))isNew=0}catch(e){}
 function flag(c){return String.fromCodePoint.apply(null,c.split("").map(function(x){return 127397+x.charCodeAt(0)}))}
 var dn;try{dn=new Intl.DisplayNames(["ar"],{type:"region"})}catch(e){}
 function nm(c){try{return dn?dn.of(c):c}catch(e){return c}}
@@ -214,5 +214,5 @@ function draw(j){
   var d=j.since?j.since.slice(0,10):"";
   h+='<p class="note">أرقام حقيقية تُسجَّل منذ '+d+' (تبدأ من الصفر). الدولة تُحدد من اتصال الزائر عبر Cloudflare، ولا نخزن عنوان IP. "زائر" = متصفح فتح الموقع لأول مرة، وليس شخصًا بعينه. الزيارات من بوتات معروفة لا تُحسب.</p>';
   b.innerHTML=h}
-fetch("/api/visits",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({n:isNew})}).then(function(r){return r.json()}).then(draw).catch(function(){draw(null)});
+fetch("/api/visits",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({n:isNew})}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(j&&!j.error){try{localStorage.setItem("nabd_seen","1")}catch(e){}}draw(j)}).catch(function(){draw(null)});
 })();
