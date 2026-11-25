@@ -89,10 +89,14 @@ function drawNews(){var l=items.filter(function(i){return nf==="all"||i.src===nf
   $("news").innerHTML=l.map(function(i){return '<div class="item"><a href="'+esc(i.l)+'" target="_blank" rel="noopener noreferrer">'+esc(i.t)+'</a><div class="src"><span class="tag">'+i.src+'</span><span>'+ago(i.d)+'</span></div></div>'}).join("")||'<p class="empty">لا توجد أخبار حاليًا</p>'}
 $("chips").addEventListener("click",function(e){var b=e.target.closest(".chip");if(b){nf=b.dataset.s;drawNews()}});
 function news(){
-  Promise.all(FEEDS.map(function(f){return fetch("https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(f[1])).then(function(r){return r.json()}).then(function(j){return j.status==="ok"?j.items.map(function(i){return{src:f[0],t:i.title,l:i.link,d:new Date(i.pubDate.replace(" ","T")+"Z").getTime()}}):null}).catch(function(){return null})})).then(function(res){
-    var ok=res.filter(Boolean),all=[].concat.apply([],ok);
-    if(!all.length){$("newsState").innerHTML='<span class="down">تعذر تحميل الأخبار الآن.</span> <button class="retry" id="rt">إعادة المحاولة</button>';$("rt").onclick=news;if(!items.length)$("news").innerHTML='<p class="empty">لا توجد أخبار محمّلة بعد.</p>';return}
-    items=all.sort(function(a,b){return b.d-a.d});drawNews();$("lastNews").textContent=tm(Date.now());
-    $("newsState").textContent=ok.length<FEEDS.length?"(تم تحميل "+ok.length+" من "+FEEDS.length+" مصادر)":""})}
-news();setInterval(news,300000);setInterval(function(){if(items.length)drawNews()},60000);
+  fetch("/api/news").then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(j){
+    if(!j.items||!j.items.length)throw new Error("empty");
+    items=j.items;drawNews();
+    $("lastNews").textContent="جُلبت من المصادر "+tm(j.fetchedAt);
+    var bad=j.sources.filter(function(s){return !s.ok}).map(function(s){return s.name});
+    $("newsState").textContent=bad.length?"(تعذر تحميل: "+bad.join("، ")+")":"";
+  }).catch(function(){
+    $("newsState").innerHTML='<span class="down">تعذر تحميل الأخبار الآن.</span> <button class="retry" id="rt">إعادة المحاولة</button>';$("rt").onclick=news;
+    if(!items.length)$("news").innerHTML='<p class="empty">لا توجد أخبار محمّلة بعد.</p>'})}
+news();setInterval(news,120000);setInterval(function(){if(items.length)drawNews()},60000);
 })();
