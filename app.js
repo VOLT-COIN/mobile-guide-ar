@@ -26,10 +26,10 @@ function rk(s){return order.indexOf(s)+1}
 function cards(){
   if(!order.length)return;var up=0,dn=0,vol=0;order.forEach(function(s){D[s].pct>=0?up++:dn++;vol+=D[s].vol});
   var srt=order.slice().sort(function(a,b){return D[b].pct-D[a].pct}),gn=srt.slice(0,3),ls=srt.slice(-3).reverse();
-  $("stats").innerHTML='<span>العملات المتتبَّعة: <b class="num">'+order.length+'</b></span><span>حجم 24 ساعة (المتتبَّعة): <b class="num">'+fv(vol)+' USDT</b></span><span>حصة BTC من هذا الحجم: <b class="num">'+(D.BTC?(D.BTC.vol/vol*100).toFixed(1):"—")+'%</b></span><span>صاعدة: <b class="up num">'+up+'</b></span><span>هابطة: <b class="down num">'+dn+'</b></span>';
+  $("stats").innerHTML='<span>Tracked coins: <b class="num">'+order.length+'</b></span><span>24h volume (tracked): <b class="num">'+fv(vol)+' USDT</b></span><span>BTC share of this volume: <b class="num">'+(D.BTC?(D.BTC.vol/vol*100).toFixed(1):"—")+'%</b></span><span>Up: <b class="up num">'+up+'</b></span><span>Down: <b class="down num">'+dn+'</b></span>';
   function c(s,l,v,sub,cl){return'<div class="card click" data-go="'+s+'"><div class="l">'+l+'</div><div class="v">'+v+'</div><div class="s '+cl+'"><span class="num">'+sub+"</span></div></div>"}
   function list(t,a){return'<div class="card"><div class="l">'+t+'</div><ul class="mini">'+a.map(function(s){return'<li data-go="'+s+'"><span>'+s+'</span><span class="num '+(D[s].pct>=0?"up":"down")+'">'+fmt(D[s].last)+" · "+pc(D[s].pct)+"</span></li>"}).join("")+"</ul></div>"}
-  heat();$("cards").innerHTML=(D.BTC?c("BTC","Bitcoin",fmt(D.BTC.last)+" USDT",pc(D.BTC.pct),D.BTC.pct>=0?"up":"down"):"")+(D.ETH?c("ETH","Ethereum",fmt(D.ETH.last)+" USDT",pc(D.ETH.pct),D.ETH.pct>=0?"up":"down"):"")+list("أعلى صعودًا (من المتتبَّعة)",gn)+list("أكثر هبوطًا (من المتتبَّعة)",ls)}
+  heat();$("cards").innerHTML=(D.BTC?c("BTC","Bitcoin",fmt(D.BTC.last)+" USDT",pc(D.BTC.pct),D.BTC.pct>=0?"up":"down"):"")+(D.ETH?c("ETH","Ethereum",fmt(D.ETH.last)+" USDT",pc(D.ETH.pct),D.ETH.pct>=0?"up":"down"):"")+list("Top gainers (tracked)",gn)+list("Top losers (tracked)",ls)}
 function listFor(){var q=qtxt.trim().toUpperCase();var l=order.slice();
   if(q)l=l.filter(function(s){return s.indexOf(q)>-1||(NAMES[s]||"").toUpperCase().indexOf(q)>-1});
   if(tab==="gain")l=l.filter(function(s){return D[s].pct>0});if(tab==="lose")l=l.filter(function(s){return D[s].pct<0});if(tab==="fav")l=l.filter(isFav);
@@ -41,11 +41,11 @@ function isStale(){return Date.now()-lastTick>15000}
 function table(){
   var l=listFor(),tot=l.length,vis=l.slice(0,shown);
   [].forEach.call(document.querySelectorAll("th.s"),function(th){th.classList.toggle("on",th.dataset.k===sortK);var t=th.textContent.replace(/ [▲▼]$/,"");th.textContent=t+(th.dataset.k===sortK?(sortD<0?" ▼":" ▲"):"")});
-  if(!vis.length){$("rows").innerHTML='<tr><td colspan="11" class="empty">'+(!order.length?"جارٍ التحميل...":tab==="fav"&&!FAV.length?"لم تضف عملات للمفضلة بعد. اضغط ☆ بجانب أي عملة.":"لا توجد عملة مطابقة")+"</td></tr>";$("more").hidden=true;$("count").textContent="";return}
+  if(!vis.length){$("rows").innerHTML='<tr><td colspan="11" class="empty">'+(!order.length?"Loading...":tab==="fav"&&!FAV.length?"No favorites yet. Click ☆ next to any coin.":"No matching coin")+"</td></tr>";$("more").hidden=true;$("count").textContent="";return}
   $("rows").innerHTML=vis.map(function(s){var d=D[s],cl=d.pct>=0?"up":"down",f=prev[s]?(d.last>prev[s]?"fu":d.last<prev[s]?"fd":""):"",w=p7[s];
-    return'<tr data-s="'+s+'" class="'+f+'"><td><button class="star'+(isFav(s)?" on":"")+'" data-star="'+s+'" aria-label="مفضلة '+s+'">'+(isFav(s)?"★":"☆")+'</button></td><td class="hm">'+rk(s)+'</td><td><a class="sym" href="/coin/'+s+'">'+ico(s)+'<div><b>'+esc(s)+"</b><small>"+esc(NAMES[s]||s)+'</small></div></a></td><td class="n">'+fmt(d.last)+'</td><td class="n '+cl+'">'+pc(d.pct)+'</td><td class="n hm '+(w==null?"":w>=0?"up":"down")+'">'+(w==null?"—":pc(w))+'</td><td class="n hm">'+fmt(d.high)+'</td><td class="n hm">'+fmt(d.low)+'</td><td class="n hm">'+fv(d.vol)+'</td><td class="hm">'+spk(s)+'</td><td class="hm"><button class="btn" data-open="'+s+'">تفاصيل</button></td></tr>'}).join("");
+    return'<tr data-s="'+s+'" class="'+f+'"><td><button class="star'+(isFav(s)?" on":"")+'" data-star="'+s+'" aria-label="Favorite '+s+'">'+(isFav(s)?"★":"☆")+'</button></td><td class="hm">'+rk(s)+'</td><td><a class="sym" href="/coin/'+s+'">'+ico(s)+'<div><b>'+esc(s)+"</b><small>"+esc(NAMES[s]||s)+'</small></div></a></td><td class="n">'+fmt(d.last)+'</td><td class="n '+cl+'">'+pc(d.pct)+'</td><td class="n hm '+(w==null?"":w>=0?"up":"down")+'">'+(w==null?"—":pc(w))+'</td><td class="n hm">'+fmt(d.high)+'</td><td class="n hm">'+fmt(d.low)+'</td><td class="n hm">'+fv(d.vol)+'</td><td class="hm">'+spk(s)+'</td><td class="hm"><button class="btn" data-open="'+s+'">Details</button></td></tr>'}).join("");
   l.forEach(function(s){prev[s]=D[s].last});
-  $("more").hidden=tot<=shown;$("more").textContent="عرض المزيد ("+(tot-shown>0?tot-shown:0)+" عملة)";$("count").textContent="يعرض "+Math.min(shown,tot)+" من "+tot;
+  $("more").hidden=tot<=shown;$("more").textContent="Show more ("+(tot-shown>0?tot-shown:0)+" coins)";$("count").textContent="Showing "+Math.min(shown,tot)+" of "+tot;
   document.querySelector("table").className=isStale()?"stalecls":"";
   sparks(vis)}
 function sparks(l){var need=l.filter(function(s){return !sparkAt[s]||Date.now()-sparkAt[s]>300000}).slice(0,80);var i=0;
@@ -53,12 +53,12 @@ function sparks(l){var need=l.filter(function(s){return !sparkAt[s]||Date.now()-
     Promise.all(batch.map(function(s){sparkAt[s]=Date.now();return fetch(BASE+"/api/v3/klines?symbol="+s+"USDT&interval=1h&limit=168").then(function(r){return r.json()}).then(function(k){if(Array.isArray(k)&&k.length>2){var c=k.map(function(x){return+x[4]});spark[s]=c.filter(function(v,j){return j%3===0||j===c.length-1});p7[s]=(c[c.length-1]-c[0])/c[0]*100}}).catch(function(){sparkAt[s]=0})})).then(function(){if(route==="home")table();setTimeout(next,300)})}
   if(need.length&&!sparks.busy){sparks.busy=1;setTimeout(function(){sparks.busy=0},4000);next()}}
 // ---------- detail
-var RG={"1D":["15m",96,"24 ساعة"],"7D":["1h",168,"7 أيام"],"1M":["4h",180,"30 يومًا"],"3M":["1d",90,"3 شهور"],"1Y":["1d",365,"سنة"]},series=[],cKey="",hover=-1,tick24={},tickAt=0;
+var RG={"1D":["15m",96,"24 hours"],"7D":["1h",168,"7 days"],"1M":["4h",180,"30 days"],"3M":["1d",90,"3 months"],"1Y":["1d",365,"1 year"]},series=[],cKey="",hover=-1,tick24={},tickAt=0;
 function legacyHash(){var m=/^#\/coin\/([A-Z0-9]+)$/.exec(location.hash);if(m&&NAMES[m[1]])history.replaceState(null,"","/coin/"+m[1]);else if(location.hash==="#/tools")history.replaceState(null,"","/tools");else if(location.hash==="#/")history.replaceState(null,"","/")}
 function setMeta(){var t,d,u;
-  if(route==="coin"){t=NAMES[sel]+" ("+sel+") السعر المباشر مقابل USDT | نبض الكريبتو";d="سعر "+NAMES[sel]+" ("+sel+") مقابل USDT على Binance مع شارت وإحصاءات 24 ساعة وأخبار. المعلومات للاطلاع فقط وليست نصيحة استثمارية.";u="/coin/"+sel}
-  else if(route==="tools"){t="أدوات: محوّل العملات الرقمية وحاسبة المحفظة | نبض الكريبتو";d="محوّل بين العملات الرقمية و USDT وحاسبة محفظة محلية تُحفظ في متصفحك فقط. أداة حساب للمعلومات وليست نصيحة استثمارية.";u="/tools"}
-  else{t="نبض الكريبتو | أسعار العملات الرقمية وأخبارها";d="أسعار مباشرة لأشهر العملات الرقمية من Binance مع شارتات وتفاصيل لكل عملة وبحث وأخبار من مصادر معروفة، ووقت آخر تحديث ظاهر.";u="/"}
+  if(route==="coin"){t=NAMES[sel]+" ("+sel+") Live Price in USDT | Chainbeat";d=NAMES[sel]+" ("+sel+") live price against USDT on Binance with a chart, 24h statistics and news. For information only, not investment advice.";u="/coin/"+sel}
+  else if(route==="tools"){t="Tools: Crypto Converter and Portfolio Calculator | Chainbeat";d="Convert between cryptocurrencies and USDT, and a local portfolio calculator saved only in your browser. A calculation tool for information, not investment advice.";u="/tools"}
+  else{t="Chainbeat | Live Crypto Prices and News";d="Live prices for popular cryptocurrencies from Binance, with charts, a page for each coin, search and headlines from known sources. The last update time is always shown.";u="/"}
   document.title=t;document.querySelector('meta[name="description"]').content=d;document.querySelector('link[rel="canonical"]').href="https://nabd-crypto.pages.dev"+u;
   document.querySelector('meta[property="og:title"]').content=t;document.querySelector('meta[property="og:description"]').content=d;document.querySelector('meta[property="og:url"]').content="https://nabd-crypto.pages.dev"+u}
 function curPath(){var m=/^\/coin\/([A-Za-z0-9]+)\/?$/.exec(location.pathname);if(m)return["coin",m[1].toUpperCase()];if(/^\/tools\/?$/.test(location.pathname))return["tools"];return["home"]}
@@ -70,18 +70,18 @@ function showRoute(){legacyHash();var cp=curPath(),m=cp[0]==="coin"?[0,cp[1]]:nu
   setMeta();$("coinlinks").hidden=route!=="home";$("navMarket").className=route==="home"&&tab!=="fav"?"on":"";$("navFav").className=route==="home"&&tab==="fav"?"on":"";$("navTools").className=route==="tools"?"on":""}
 function openCoin(s){go("/coin/"+s)}
 function loadTick(){var s=sel;fetch(BASE+"/api/v3/ticker/24hr?symbol="+s+"USDT").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(s===sel){tick24=j;tickAt=Date.now();stats()}}).catch(function(){tick24={};stats()})}
-function head(){var d=D[sel];if(!d)return;$("dName").textContent=NAMES[sel]||sel;$("dSub").textContent=sel+"/USDT · المرتبة "+rk(sel)+" بحجم التداول";$("crumbName").textContent=NAMES[sel]||sel;$("nName").textContent=NAMES[sel]||sel;
-  if(HASICO[sel]){$("dIco").className="ico has";$("dIco").innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true"><use href="/icons.svg#'+sel+'"/></svg>'}else{$("dIco").className="ico";$("dIco").textContent=sel.slice(0,4);$("dIco").style.background=icoCol(sel)}$("dIntro").textContent=NAMES[sel]?"صفحة "+NAMES[sel]+" ("+sel+"): السعر مقابل USDT على Binance مع شارت وإحصاءات 24 ساعة وأخبار. الأرقام تُحمَّل مباشرة في الصفحة، وللمعلومات فقط وليست نصيحة استثمارية. أُنشئ الموقع بمساعدة الذكاء الاصطناعي.":"";$("dPrice").textContent=fmt(d.last)+" USDT";var e=$("dChg");e.innerHTML='<span class="num">'+pc(d.pct)+'</span> <small>24 ساعة</small>';e.className="chg "+(d.pct>=0?"up":"down");
-  var f=$("dFav");f.className="btn fav"+(isFav(sel)?" on":"");f.textContent=isFav(sel)?"★ في المفضلة":"☆ أضف للمفضلة"}
+function head(){var d=D[sel];if(!d)return;$("dName").textContent=NAMES[sel]||sel;$("dSub").textContent=sel+"/USDT · Rank #"+rk(sel)+" by volume";$("crumbName").textContent=NAMES[sel]||sel;$("nName").textContent=NAMES[sel]||sel;
+  if(HASICO[sel]){$("dIco").className="ico has";$("dIco").innerHTML='<svg viewBox="0 0 32 32" aria-hidden="true"><use href="/icons.svg#'+sel+'"/></svg>'}else{$("dIco").className="ico";$("dIco").textContent=sel.slice(0,4);$("dIco").style.background=icoCol(sel)}$("dIntro").textContent=NAMES[sel]?NAMES[sel]+" ("+sel+") page: price against USDT on Binance with a chart, 24h statistics and news. Numbers load live in the page and are for information only, not investment advice. This site was created with the help of AI.":"";$("dPrice").textContent=fmt(d.last)+" USDT";var e=$("dChg");e.innerHTML='<span class="num">'+pc(d.pct)+'</span> <small>24h</small>';e.className="chg "+(d.pct>=0?"up":"down");
+  var f=$("dFav");f.className="btn fav"+(isFav(sel)?" on":"");f.textContent=isFav(sel)?"★ In favorites":"☆ Add to favorites"}
 function stats(){var d=D[sel];if(!d)return;var t=tick24&&tick24.symbol===sel+"USDT"?tick24:null;var rs=series.length>1?series:null;
   function c(l,v,cl){return'<div class="card"><div class="l">'+l+'</div><div class="v '+(cl||"")+'">'+v+"</div></div>"}
-  var a=[c("سعر الافتتاح (24س)",fmt(d.open)+" USDT"),c("أعلى 24 ساعة",fmt(d.high)+" USDT"),c("أدنى 24 ساعة",fmt(d.low)+" USDT"),c("حجم 24س (USDT)",fv(d.vol)+" USDT"),
-   c("حجم 24س ("+sel+")",t?fv(+t.volume)+" "+sel:'<span class="na">—</span>'),c("متوسط السعر المرجَّح",t?fmt(t.weightedAvgPrice)+" USDT":'<span class="na">—</span>'),c("عدد الصفقات (24س)",t?(+t.count).toLocaleString("en-US"):'<span class="na">—</span>'),c("المرتبة بحجم التداول","#"+rk(sel))];
+  var a=[c("Open price (24h)",fmt(d.open)+" USDT"),c("24h high",fmt(d.high)+" USDT"),c("24h low",fmt(d.low)+" USDT"),c("24h volume (USDT)",fv(d.vol)+" USDT"),
+   c("24h volume ("+sel+")",t?fv(+t.volume)+" "+sel:'<span class="na">—</span>'),c("Weighted average price",t?fmt(t.weightedAvgPrice)+" USDT":'<span class="na">—</span>'),c("Trades (24h)",t?(+t.count).toLocaleString("en-US"):'<span class="na">—</span>'),c("Rank by volume","#"+rk(sel))];
   if(rs){var hi=Math.max.apply(0,rs.map(function(x){return x.h})),lo=Math.min.apply(0,rs.map(function(x){return x.l})),ch=(rs[rs.length-1].c-rs[0].o)/rs[0].o*100;
-    a.push(c("أعلى سعر في الفترة",fmt(hi)+" USDT"),c("أدنى سعر في الفترة",fmt(lo)+" USDT"),c("تغيّر الفترة",pc(ch),ch>=0?"up":"down"),c("عدد الشموع",rs.length))}
-  $("sgrid").innerHTML=a.join("");$("rangeLbl").textContent="(الفترة المختارة: "+RG[range][2]+")"}
-function loadChart(){var k=sel+range;cKey=k;$("chartMsg").textContent="جارٍ تحميل الشارت...";series=[];drawChart();
-  fetch(BASE+"/api/v3/klines?symbol="+sel+"USDT&interval="+RG[range][0]+"&limit="+RG[range][1]).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(a){if(cKey!==k)return;series=a.map(function(x){return{t:x[0],o:+x[1],h:+x[2],l:+x[3],c:+x[4],v:+x[5]}});$("chartMsg").textContent="";drawChart();stats()}).catch(function(){if(cKey===k)$("chartMsg").textContent="تعذر تحميل الشارت الآن من المصدر. جرّب تغيير الفترة."})}
+    a.push(c("Period high",fmt(hi)+" USDT"),c("Period low",fmt(lo)+" USDT"),c("Period change",pc(ch),ch>=0?"up":"down"),c("Candles",rs.length))}
+  $("sgrid").innerHTML=a.join("");$("rangeLbl").textContent="(Selected range: "+RG[range][2]+")"}
+function loadChart(){var k=sel+range;cKey=k;$("chartMsg").textContent="Loading chart...";series=[];drawChart();
+  fetch(BASE+"/api/v3/klines?symbol="+sel+"USDT&interval="+RG[range][0]+"&limit="+RG[range][1]).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(a){if(cKey!==k)return;series=a.map(function(x){return{t:x[0],o:+x[1],h:+x[2],l:+x[3],c:+x[4],v:+x[5]}});$("chartMsg").textContent="";drawChart();stats()}).catch(function(){if(cKey===k)$("chartMsg").textContent="Could not load the chart from the source right now. Try changing the range."})}
 function drawChart(){var cv=$("chart"),dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;if(!w)return;cv.width=w*dpr;cv.height=h*dpr;var x=cv.getContext("2d");x.scale(dpr,dpr);x.clearRect(0,0,w,h);
   if(series.length<2)return;var pts=series.map(function(p){return{t:p.t,o:p.o,h:p.h,l:p.l,c:p.c,v:p.v}});
   if(D[sel]&&!isStale()){var q=pts[pts.length-1];q.c=D[sel].last;q.h=Math.max(q.h,q.c);q.l=Math.min(q.l,q.c)}
@@ -113,19 +113,19 @@ function px(x){return x==="USDT"?1:D[x]?D[x].last:NaN}
 function opts(withUsdt){return(withUsdt?['<option value="USDT">USDT</option>']:[]).concat(order.map(function(s){return'<option value="'+s+'">'+s+" · "+esc(NAMES[s]||s)+"</option>"})).join("")}
 function fillSel(){if(!order.length||$("cFrom").options.length)return;$("cFrom").innerHTML=opts(1);$("cTo").innerHTML=opts(1);$("pCoin").innerHTML=opts(0);$("cFrom").value="BTC";$("cTo").value="USDT"}
 function num(v){v=parseFloat(v);return isFinite(v)?v:NaN}
-function toolsRender(){fillSel();if(!order.length){$("cRes").textContent="جارٍ تحميل الأسعار...";return}
+function toolsRender(){fillSel();if(!order.length){$("cRes").textContent="Loading prices...";return}
   var a=num($("cAmt").value),f=$("cFrom").value,t=$("cTo").value,r=a*px(f)/px(t);
-  $("cRes").textContent=isFinite(r)&&isFinite(a)&&a>=0&&!isStale()?a.toLocaleString("en-US",{maximumFractionDigits:8})+" "+f+" = "+r.toLocaleString("en-US",{maximumFractionDigits:r<1?8:4})+" "+t:(isStale()&&isFinite(r)?"الأسعار متأخرة أو منقطعة، لا يمكن عرض تحويل حديث":"أدخل مبلغًا صحيحًا");
-  var stale=isStale(),tb=$("tStale");tb.hidden=!stale;if(stale)tb.textContent="الأسعار متأخرة أو منقطعة (آخر تحديث "+(lastTick?tm(lastTick):"لم يصل بعد")+"). القيم أدناه قديمة وليست حالية.";
+  $("cRes").textContent=isFinite(r)&&isFinite(a)&&a>=0&&!isStale()?a.toLocaleString("en-US",{maximumFractionDigits:8})+" "+f+" = "+r.toLocaleString("en-US",{maximumFractionDigits:r<1?8:4})+" "+t:(isStale()&&isFinite(r)?"Prices are delayed or disconnected, so a current conversion cannot be shown":"Enter a valid amount");
+  var stale=isStale(),tb=$("tStale");tb.hidden=!stale;if(stale)tb.textContent="Prices are delayed or disconnected (last update "+(lastTick?tm(lastTick):"not received yet")+"). The values below are old, not current.";
   var tv=0,tc=0,tp=0,tq=0,miss=0,nocost=0,hasPl=false;
   $("pRows").innerHTML=LOTS.length?LOTS.map(function(l,i){var p=px(l.s),ok=isFinite(p),v=ok?l.a*p:NaN,pl=(l.p!=null&&ok)?v-l.a*l.p:null;if(ok)tv+=v;else miss++;if(l.p==null)nocost++;if(pl!=null){hasPl=true;tp+=pl;if(l.p>0){tc+=l.a*l.p;tq+=pl}}
-    var pct=pl==null?"":(l.a*l.p>0?" ("+pc(pl/(l.a*l.p)*100)+")":" (النسبة غير محسوبة: تكلفة صفر)");
-    var plTxt=pl==null?(l.p==null?"— (بدون سعر شراء)":"— (السعر غير متاح)"):fmt(pl)+" USDT"+pct;
-    return'<div class="pcard'+(stale?" stalecls":"")+'"><div class="ph2">'+ico(l.s)+'<b>'+esc(l.s)+'</b> <small class="meta">'+esc(NAMES[l.s]||"")+'</small><button class="btn del" data-del="'+i+'">حذف</button></div><dl><div><dt>الكمية</dt><dd class="num">'+l.a+'</dd></div><div><dt>سعر الشراء</dt><dd class="num">'+(l.p!=null?fmt(l.p):"—")+'</dd></div><div><dt>السعر الحالي'+(stale?" (قديم)":"")+'</dt><dd class="num">'+(ok?fmt(p):"غير متاح")+'</dd></div><div><dt>القيمة (USDT)</dt><dd class="num">'+(ok?fmt(v):"—")+'</dd></div></dl><div class="plrow">الربح/الخسارة: <b class="num '+(pl==null?"":pl>=0?"up":"down")+'">'+plTxt+'</b></div></div>'}).join(""):'<div class="empty">لا توجد عملات في محفظتك بعد. أضف أول عملة من النموذج أعلاه.</div>';
-  $("pTotal").innerHTML=LOTS.length?'<div><span>القيمة'+(stale?" (قديمة)":" الحالية")+'</span><br><b class="num">'+fmt(tv)+' USDT</b>'+(miss?'<br><small class="meta">لم تُحسب '+miss+' عملة لعدم توفر سعرها</small>':"")+'</div>'+(hasPl?'<div><span>الربح/الخسارة (للصفقات ذات سعر شراء فقط)</span><br><b class="num '+(tp>=0?"up":"down")+'">'+fmt(tp)+" USDT"+(tc>0?" ("+pc(tq/tc*100)+")":"")+'</b>'+(tc>0?'<br><small class="meta">النسبة محسوبة على الصفقات ذات تكلفة أكبر من صفر فقط</small>':"")+(nocost?'<br><small class="meta">'+nocost+' صفقة بدون سعر شراء مستبعدة من الربح/الخسارة</small>':"")+'</div>':(nocost?'<div><small class="meta">لا يوجد سعر شراء لحساب الربح/الخسارة</small></div>':"")):""}
+    var pct=pl==null?"":(l.a*l.p>0?" ("+pc(pl/(l.a*l.p)*100)+")":" (percent not computed: zero cost)");
+    var plTxt=pl==null?(l.p==null?"— (no buy price)":"— (price unavailable)"):fmt(pl)+" USDT"+pct;
+    return'<div class="pcard'+(stale?" stalecls":"")+'"><div class="ph2">'+ico(l.s)+'<b>'+esc(l.s)+'</b> <small class="meta">'+esc(NAMES[l.s]||"")+'</small><button class="btn del" data-del="'+i+'">Delete</button></div><dl><div><dt>Amount</dt><dd class="num">'+l.a+'</dd></div><div><dt>Buy price</dt><dd class="num">'+(l.p!=null?fmt(l.p):"—")+'</dd></div><div><dt>Current price'+(stale?" (old)":"")+'</dt><dd class="num">'+(ok?fmt(p):"unavailable")+'</dd></div><div><dt>Value (USDT)</dt><dd class="num">'+(ok?fmt(v):"—")+'</dd></div></dl><div class="plrow">Profit/loss: <b class="num '+(pl==null?"":pl>=0?"up":"down")+'">'+plTxt+'</b></div></div>'}).join(""):'<div class="empty">No coins in your portfolio yet. Add your first coin using the form above.</div>';
+  $("pTotal").innerHTML=LOTS.length?'<div><span>Value'+(stale?" (old)":" (current)")+'</span><br><b class="num">'+fmt(tv)+' USDT</b>'+(miss?'<br><small class="meta">'+miss+' coin(s) not counted because the price is unavailable</small>':"")+'</div>'+(hasPl?'<div><span>Profit/loss (entries with a buy price only)</span><br><b class="num '+(tp>=0?"up":"down")+'">'+fmt(tp)+" USDT"+(tc>0?" ("+pc(tq/tc*100)+")":"")+'</b>'+(tc>0?'<br><small class="meta">Percent covers entries with cost above zero only</small>':"")+(nocost?'<br><small class="meta">'+nocost+' entry(ies) without a buy price excluded from profit/loss</small>':"")+'</div>':(nocost?'<div><small class="meta">No buy price entered to calculate profit/loss</small></div>':"")):""}
 $("pAdd").onclick=function(){var a=num($("pAmt").value),p=$("pPrice").value.trim()===""?($("pPrice").validity.badInput?NaN:null):num($("pPrice").value),m=$("pMsg");if($("pAmt").validity.badInput)a=NaN;
-  if(!(a>0&&isFinite(a))){m.textContent="أدخل كمية أكبر من صفر.";return}if(p!==null&&!(isFinite(p)&&p>=0)){m.textContent="سعر الشراء غير صحيح.";return}
-  LOTS.push({s:$("pCoin").value,a:a,p:p});saveLots();$("pAmt").value="";$("pPrice").value="";m.textContent="تمت الإضافة.";toolsRender()};
+  if(!(a>0&&isFinite(a))){m.textContent="Enter an amount greater than zero.";return}if(p!==null&&!(isFinite(p)&&p>=0)){m.textContent="The buy price is not valid.";return}
+  LOTS.push({s:$("pCoin").value,a:a,p:p});saveLots();$("pAmt").value="";$("pPrice").value="";m.textContent="Added.";toolsRender()};
 $("pRows").addEventListener("click",function(e){var d=e.target.closest("[data-del]");if(d){LOTS.splice(+d.dataset.del,1);saveLots();toolsRender()}});
 ["cAmt","cFrom","cTo"].forEach(function(i){$(i).addEventListener("input",toolsRender)});
 $("cSwap").onclick=function(){var f=$("cFrom").value;$("cFrom").value=$("cTo").value;$("cTo").value=f;toolsRender()};
@@ -150,7 +150,7 @@ try{var th=localStorage.getItem("nabd_theme");if(th)document.documentElement.dat
 var qi=$("q"),sg=$("sugg"),hl=-1;
 function suggest(){var q=qi.value.trim().toUpperCase();qtxt=q;if(route==="home"){shown=40;table()}if(!q){sg.hidden=true;return}
   var m=order.filter(function(s){return s.indexOf(q)>-1||(NAMES[s]||"").toUpperCase().indexOf(q)>-1}).slice(0,6);hl=-1;
-  sg.innerHTML=m.length?m.map(function(s,i){return'<button data-s="'+s+'">'+ico(s)+"<span><b>"+s+"</b> "+esc(NAMES[s]||"")+'</span><span class="px">'+fmt(D[s].last)+"</span></button>"}).join(""):'<div class="empty">لا توجد عملة مطابقة</div>';sg.hidden=false}
+  sg.innerHTML=m.length?m.map(function(s,i){return'<button data-s="'+s+'">'+ico(s)+"<span><b>"+s+"</b> "+esc(NAMES[s]||"")+'</span><span class="px">'+fmt(D[s].last)+"</span></button>"}).join(""):'<div class="empty">No matching coin</div>';sg.hidden=false}
 qi.addEventListener("input",suggest);
 qi.addEventListener("keydown",function(e){var b=sg.querySelectorAll("button");if(e.key==="ArrowDown"&&b.length){hl=(hl+1)%b.length}else if(e.key==="ArrowUp"&&b.length){hl=(hl-1+b.length)%b.length}else if(e.key==="Enter"&&b.length){openCoin(b[hl>=0?hl:0].dataset.s);sg.hidden=true;qi.value="";qtxt="";return}else if(e.key==="Escape"){sg.hidden=true;return}else return;[].forEach.call(b,function(x,i){x.className=i===hl?"hl":""});e.preventDefault()});
 sg.addEventListener("mousedown",function(e){var b=e.target.closest("button");if(b){e.preventDefault();openCoin(b.dataset.s);sg.hidden=true;qi.value="";qtxt="";if(route==="home")table()}});
@@ -163,39 +163,39 @@ function connect(){try{ws=new WebSocket(WSU)}catch(e){return}
   ws.onmessage=function(e){try{var a=JSON.parse(e.data);ingest(a);if(!order.length||Date.now()%20==0)rank();schedule()}catch(x){}};
   ws.onclose=ws.onerror=function(){wsOk=false;setTimeout(connect,5000)}}
 setInterval(function(){
-  if(!lastTick){setStatus("wait","جارٍ الاتصال...");return}
-  var age=Date.now()-lastTick;$("lastTick").innerHTML='<span class="num">'+tm(lastTick)+'</span> (قبل '+Math.round(age/1000)+" ثانية)";
+  if(!lastTick){setStatus("wait","Connecting...");return}
+  var age=Date.now()-lastTick;$("lastTick").innerHTML='<span class="num">'+tm(lastTick)+'</span> ('+Math.round(age/1000)+"s ago)";
   var b=$("banner");
-  if(age<15000){setStatus("live",wsOk?"مباشر: تحديث كل ثانية تقريبًا":"متصل: تحديث كل 10 ثوانٍ");b.hidden=true}
-  else if(age<60000){setStatus("stale","تأخر التحديث");b.hidden=false;b.className="banner";b.textContent="تأخر وصول الأسعار من المصدر. الأرقام المعروضة قد لا تكون حديثة (آخر تحديث "+tm(lastTick)+")."}
-  else{setStatus("err","انقطع الاتصال بالمصدر");b.hidden=false;b.className="banner err";b.textContent="انقطع الاتصال بمصدر الأسعار منذ أكثر من دقيقة. الأرقام المعروضة قديمة (آخر تحديث "+tm(lastTick)+") ونحاول إعادة الاتصال تلقائيًا."}
+  if(age<15000){setStatus("live",wsOk?"Live: updates about every second":"Connected: updates every 10 seconds");b.hidden=true}
+  else if(age<60000){setStatus("stale","Update delayed");b.hidden=false;b.className="banner";b.textContent="Prices from the source are delayed. The numbers shown may not be current (last update "+tm(lastTick)+")."}
+  else{setStatus("err","Source disconnected");b.hidden=false;b.className="banner err";b.textContent="The connection to the price source has been down for over a minute. The numbers shown are old (last update "+tm(lastTick)+"). Reconnecting automatically."}
   if(route==="tools")toolsRender();if(age>=15000)document.querySelector("table").className="stalecls"},1000);
 setInterval(function(){if(!wsOk||isStale())poll()},10000);
 setInterval(function(){rank();if(route==="home"&&order.length)table();if(route==="coin"&&Date.now()-tickAt>30000)loadTick()},60000);
 setInterval(function(){if(route==="coin")loadChart()},300000);
 poll().then(function(){showRoute()});connect();
-setTimeout(function(){if(!order.length)$("rows").innerHTML='<tr><td colspan="11" class="empty">تعذر الاتصال بمصدر الأسعار حاليًا. نعيد المحاولة تلقائيًا.</td></tr>'},12000);
+setTimeout(function(){if(!order.length)$("rows").innerHTML='<tr><td colspan="11" class="empty">Could not reach the price source right now. Retrying automatically.</td></tr>'},12000);
 // ---------- news
 var FEEDS=[["Cointelegraph"],["CoinDesk"],["Decrypt"],["Bitcoin Magazine"]];
 var items=[],nf="all";
-function ago(d){var m=Math.max(0,Math.round((Date.now()-d)/60000));return m<1?"الآن":m<60?"منذ "+m+" دقيقة":m<1440?"منذ "+Math.round(m/60)+" ساعة":"منذ "+Math.round(m/1440)+" يوم"}
+function ago(d){var m=Math.max(0,Math.round((Date.now()-d)/60000));return m<1?"just now":m<60?m+" min ago":m<1440?Math.round(m/60)+" h ago":Math.round(m/1440)+" d ago"}
 function card(i){return'<div class="item"><a href="'+esc(i.l)+'" target="_blank" rel="noopener noreferrer">'+esc(i.t)+'</a><div class="src"><span class="tag">'+i.src+"</span><span>"+ago(i.d)+"</span></div></div>"}
 function drawNews(){var l=items.filter(function(i){return nf==="all"||i.src===nf}).slice(0,20);
-  $("chips").innerHTML=["all"].concat(FEEDS.map(function(f){return f[0]})).map(function(s){return'<button class="chip'+(s===nf?" on":"")+'" data-s="'+s+'">'+(s==="all"?"الكل":s)+"</button>"}).join("");
-  $("news").innerHTML=l.map(card).join("")||'<p class="empty">لا توجد أخبار حاليًا</p>';coinNews()}
+  $("chips").innerHTML=["all"].concat(FEEDS.map(function(f){return f[0]})).map(function(s){return'<button class="chip'+(s===nf?" on":"")+'" data-s="'+s+'">'+(s==="all"?"All":s)+"</button>"}).join("");
+  $("news").innerHTML=l.map(card).join("")||'<p class="empty">No news right now</p>';coinNews()}
 function coinNews(){if(route!=="coin")return;var nm=NAMES[sel]||sel,re=new RegExp("\\b("+sel+"|"+nm.replace(/[^A-Za-z0-9 ]/g,"")+")\\b","i");var l=items.filter(function(i){return re.test(i.t)}).slice(0,8);
-  $("dNews").innerHTML=l.length?l.map(card).join(""):'<p class="empty">'+(items.length?"لا توجد عناوين عن "+esc(nm)+" الآن في المصادر الأربعة.":"لا توجد أخبار محمّلة بعد.")+"</p>"}
+  $("dNews").innerHTML=l.length?l.map(card).join(""):'<p class="empty">'+(items.length?"No headlines about "+esc(nm)+" right now in the four sources.":"No news loaded yet.")+"</p>"}
 $("chips").addEventListener("click",function(e){var b=e.target.closest(".chip");if(b){nf=b.dataset.s;drawNews()}});
 function news(){
   fetch("/api/news").then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(j){
     if(!j.items||!j.items.length)throw new Error("empty");
     items=j.items;drawNews();
-    $("lastNews").textContent="جُلبت من المصادر "+tm(j.fetchedAt);
+    $("lastNews").textContent="Fetched from sources at "+tm(j.fetchedAt);
     var bad=j.sources.filter(function(s){return !s.ok}).map(function(s){return s.name});
-    $("newsState").textContent=bad.length?"(تعذر تحميل: "+bad.join("، ")+")":"";
+    $("newsState").textContent=bad.length?"(could not load: "+bad.join(", ")+")":"";
   }).catch(function(){
-    $("newsState").innerHTML='<span class="down">تعذر تحميل الأخبار الآن.</span> <button class="retry" id="rt">إعادة المحاولة</button>';$("rt").onclick=news;
-    if(!items.length)$("news").innerHTML='<p class="empty">لا توجد أخبار محمّلة بعد.</p>';coinNews()})}
+    $("newsState").innerHTML='<span class="down">Could not load the news right now.</span> <button class="retry" id="rt">Retry</button>';$("rt").onclick=news;
+    if(!items.length)$("news").innerHTML='<p class="empty">No news loaded yet.</p>';coinNews()})}
 news();setInterval(news,120000);
 })();
 
@@ -203,16 +203,16 @@ news();setInterval(news,120000);
 var b=document.getElementById("visitsBody");if(!b)return;
 var isNew=1;try{if(localStorage.getItem("nabd_seen"))isNew=0}catch(e){}
 function flag(c){return String.fromCodePoint.apply(null,c.split("").map(function(x){return 127397+x.charCodeAt(0)}))}
-var dn;try{dn=new Intl.DisplayNames(["ar"],{type:"region"})}catch(e){}
+var dn;try{dn=new Intl.DisplayNames(["en"],{type:"region"})}catch(e){}
 function nm(c){try{return dn?dn.of(c):c}catch(e){return c}}
 function fmt(n){return n.toLocaleString("en-US")}
 function draw(j){
-  if(!j||j.error){b.textContent="العدّاد غير متاح الآن.";return}
-  var h='<div class="vis-tot"><div><b>'+fmt(j.totalVisitors)+'</b><span>زائر (متصفح مختلف)</span></div><div><b>'+fmt(j.totalViews)+'</b><span>مرة فتح للصفحة</span></div></div>';
-  if(j.countries.length){h+='<ul class="vis-list">'+j.countries.map(function(r){return '<li><span class="fl" aria-hidden="true">'+flag(r.country)+'</span><span class="cn">'+nm(r.country)+' <small>'+r.country+'</small></span><b>'+fmt(r.visitors)+' <small>زائر</small></b><i>'+fmt(r.views)+' فتح</i></li>'}).join("")+'</ul>'}
-  else h+='<p class="empty">لا توجد زيارات مسجلة بعد.</p>';
+  if(!j||j.error){b.textContent="The counter is unavailable right now.";return}
+  var h='<div class="vis-tot"><div><b>'+fmt(j.totalVisitors)+'</b><span>visitors (distinct browsers)</span></div><div><b>'+fmt(j.totalViews)+'</b><span>page opens</span></div></div>';
+  if(j.countries.length){h+='<ul class="vis-list">'+j.countries.map(function(r){return '<li><span class="fl" aria-hidden="true">'+flag(r.country)+'</span><span class="cn">'+nm(r.country)+' <small>'+r.country+'</small></span><b>'+fmt(r.visitors)+' <small>visitors</small></b><i>'+fmt(r.views)+' opens</i></li>'}).join("")+'</ul>'}
+  else h+='<p class="empty">No visits recorded yet.</p>';
   var d=j.since?j.since.slice(0,10):"";
-  h+='<p class="note">أرقام حقيقية تُسجَّل منذ '+d+' (تبدأ من الصفر). الدولة تُحدد من اتصال الزائر عبر Cloudflare، ولا نخزن عنوان IP. "زائر" = متصفح فتح الموقع لأول مرة، وليس شخصًا بعينه. الزيارات من بوتات معروفة لا تُحسب.</p>';
+  h+='<p class="note">Real counts, recorded since '+d+' (started from zero). The country comes from the visitor connection as seen by Cloudflare, and we do not store IP addresses. "Visitor" = a browser opening the site for the first time, not a specific person. Visits from known bots are not counted. Some of the first counts were test visits.</p>';
   b.innerHTML=h}
 var qa=false;try{if(/[?&]notrack=1/.test(location.search))localStorage.setItem("nabd_notrack","1");qa=localStorage.getItem("nabd_notrack")==="1"}catch(e){}
 (qa?fetch("/api/visits"):fetch("/api/visits",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({n:isNew})})).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(j&&!j.error){try{localStorage.setItem("nabd_seen","1")}catch(e){}}draw(j)}).catch(function(){draw(null)});
