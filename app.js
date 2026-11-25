@@ -39,7 +39,7 @@ function spk(s){var a=spark[s];if(!a)return"";var mn=Math.min.apply(0,a),mx=Math
 function isStale(){return Date.now()-lastTick>15000}
 function table(){
   var l=listFor(),tot=l.length,vis=l.slice(0,shown);
-  [].forEach.call(document.querySelectorAll("th.s"),function(th){th.className="s"+(th.dataset.k===sortK?" on":"");var t=th.textContent.replace(/ [▲▼]$/,"");th.textContent=t+(th.dataset.k===sortK?(sortD<0?" ▼":" ▲"):"")});
+  [].forEach.call(document.querySelectorAll("th.s"),function(th){th.classList.toggle("on",th.dataset.k===sortK);var t=th.textContent.replace(/ [▲▼]$/,"");th.textContent=t+(th.dataset.k===sortK?(sortD<0?" ▼":" ▲"):"")});
   if(!vis.length){$("rows").innerHTML='<tr><td colspan="11" class="empty">'+(!order.length?"جارٍ التحميل...":tab==="fav"&&!FAV.length?"لم تضف عملات للمفضلة بعد. اضغط ☆ بجانب أي عملة.":"لا توجد عملة مطابقة")+"</td></tr>";$("more").hidden=true;$("count").textContent="";return}
   $("rows").innerHTML=vis.map(function(s){var d=D[s],cl=d.pct>=0?"up":"down",f=prev[s]?(d.last>prev[s]?"fu":d.last<prev[s]?"fd":""):"",w=p7[s];
     return'<tr data-s="'+s+'" class="'+f+'"><td><button class="star'+(isFav(s)?" on":"")+'" data-star="'+s+'" aria-label="مفضلة '+s+'">'+(isFav(s)?"★":"☆")+'</button></td><td class="hm">'+rk(s)+'</td><td><div class="sym">'+ico(s)+'<div><b>'+esc(s)+"</b><small>"+esc(NAMES[s]||s)+'</small></div></div></td><td class="n">'+fmt(d.last)+'</td><td class="n '+cl+'">'+pc(d.pct)+'</td><td class="n hm '+(w==null?"":w>=0?"up":"down")+'">'+(w==null?"—":pc(w))+'</td><td class="n hm">'+fmt(d.high)+'</td><td class="n hm">'+fmt(d.low)+'</td><td class="n hm">'+fv(d.vol)+'</td><td class="hm">'+spk(s)+'</td><td class="hm"><button class="btn" data-open="'+s+'">تفاصيل</button></td></tr>'}).join("");
