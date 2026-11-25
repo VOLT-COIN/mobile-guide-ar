@@ -19,7 +19,7 @@ function css(v){return getComputedStyle(document.documentElement).getPropertyVal
 function setStatus(c,t){$("status").className="pill "+c;$("statusText").textContent=t}
 function isFav(s){return FAV.indexOf(s)>-1}
 function toggleFav(s){var i=FAV.indexOf(s);i>-1?FAV.splice(i,1):FAV.push(s);try{localStorage.setItem("chainbeat_fav",JSON.stringify(FAV))}catch(e){}render()}
-function ingest(arr){arr.forEach(function(t){var s=t.s;if(!/USDT$/.test(s))return;var b=s.slice(0,-4);if(!NAMES[b]||STABLE[b]||/(UP|DOWN|BULL|BEAR)$/.test(b))return;var o=+t.o,c=+t.c;D[b]={last:c,open:o,pct:o>0?(c-o)/o*100:0,high:+t.h,low:+t.l,vol:+t.q}});lastTick=Date.now()}
+function ingest(arr){arr.forEach(function(t){var s=t.s;if(!/USDT$/.test(s))return;var b=s.slice(0,-4);if(t.ct&&Date.now()-t.ct>3600000){delete D[b];return}if(!NAMES[b]||STABLE[b]||/(UP|DOWN|BULL|BEAR)$/.test(b))return;var o=+t.o,c=+t.c;D[b]={last:c,open:o,pct:o>0?(c-o)/o*100:0,high:+t.h,low:+t.l,vol:+t.q}});lastTick=Date.now()}
 function rank(){order=Object.keys(D).sort(function(a,b){return D[b].vol-D[a].vol}).slice(0,200)}
 function rk(s){return order.indexOf(s)+1}
 // ---------- home
@@ -157,7 +157,7 @@ sg.addEventListener("mousedown",function(e){var b=e.target.closest("button");if(
 qi.addEventListener("blur",function(){setTimeout(function(){sg.hidden=true},120)});
 window.addEventListener("hashchange",showRoute);window.addEventListener("popstate",showRoute);document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href]");if(!a||e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;var h=a.getAttribute("href");if(h==="/"||h==="/tools"||/^\/coin\/[A-Z0-9]+$/.test(h)){e.preventDefault();go(h)}});window.addEventListener("resize",function(){if(route==="coin")drawChart()});
 // ---------- data
-function poll(){return fetch(BASE+"/api/v3/ticker/24hr?type=MINI").then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(a){ingest(a.map(function(t){return{s:t.symbol,o:t.openPrice,c:t.lastPrice,h:t.highPrice,l:t.lowPrice,q:t.quoteVolume}}));rank();schedule()}).catch(function(){})}
+function poll(){return fetch(BASE+"/api/v3/ticker/24hr?type=MINI").then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(a){ingest(a.map(function(t){return{s:t.symbol,o:t.openPrice,c:t.lastPrice,h:t.highPrice,l:t.lowPrice,q:t.quoteVolume,ct:t.closeTime}}));rank();schedule()}).catch(function(){})}
 function connect(){try{ws=new WebSocket(WSU)}catch(e){return}
   ws.onopen=function(){wsOk=true};
   ws.onmessage=function(e){try{var a=JSON.parse(e.data);ingest(a);if(!order.length||Date.now()%20==0)rank();schedule()}catch(x){}};
@@ -200,7 +200,14 @@ news();setInterval(news,120000);
 })();
 
 (function(){
-var b=document.getElementById("visitsBody");if(!b)return;
+try{var m=/^#import=(.+)$/.exec(location.hash);if(m){var o=JSON.parse(decodeURIComponent(escape(atob(m[1].replace(/-/g,"+").replace(/_/g,"/")))));
+if(o&&Array.isArray(o.fav)&&!localStorage.getItem("chainbeat_fav")){var f=o.fav.filter(function(x){return typeof x==="string"&&/^[A-Z0-9]{1,12}$/.test(x)});localStorage.setItem("chainbeat_fav",JSON.stringify(f))}
+if(o&&Array.isArray(o.lots)&&!localStorage.getItem("chainbeat_lots")){var l=o.lots.filter(function(x){return x&&typeof x.s==="string"&&/^[A-Z0-9]{1,12}$/.test(x.s)&&isFinite(x.a)&&x.a>0&&(x.p==null||(isFinite(x.p)&&x.p>=0))}).map(function(x){return{s:x.s,a:+x.a,p:x.p==null?null:+x.p}});localStorage.setItem("chainbeat_lots",JSON.stringify(l))}
+if(o&&(o.theme==="light"||o.theme==="dark")&&!localStorage.getItem("chainbeat_theme"))localStorage.setItem("chainbeat_theme",o.theme);
+window.__imp=1;history.replaceState(null,"",location.pathname+location.search);location.reload()}}catch(e){}
+})();
+(function(){
+var b=document.getElementById("visitsBody");if(!b||window.__imp)return;
 var isNew=1;try{if(localStorage.getItem("chainbeat_seen"))isNew=0}catch(e){}
 function flag(c){return String.fromCodePoint.apply(null,c.split("").map(function(x){return 127397+x.charCodeAt(0)}))}
 var dn;try{dn=new Intl.DisplayNames(["en"],{type:"region"})}catch(e){}
@@ -209,7 +216,7 @@ function fmt(n){return n.toLocaleString("en-US")}
 function draw(j){
   if(!j||j.error){b.textContent="The counter is unavailable right now.";return}
   var h='<div class="vis-tot"><div><b>'+fmt(j.totalVisitors)+'</b><span>visitors (distinct browsers)</span></div><div><b>'+fmt(j.totalViews)+'</b><span>page opens</span></div></div>';
-  if(j.countries.length){h+='<ul class="vis-list">'+j.countries.map(function(r){return '<li><span class="fl" aria-hidden="true">'+flag(r.country)+'</span><span class="cn">'+nm(r.country)+' <small>'+r.country+'</small></span><b>'+fmt(r.visitors)+' <small>visitors</small></b><i>'+fmt(r.views)+' opens</i></li>'}).join("")+'</ul>'}
+  if(j.countries.length){h+='<ul class="vis-list">'+j.countries.map(function(r){return '<li><span class="fl" aria-hidden="true">'+flag(r.country)+'</span><span class="cn">'+nm(r.country)+' <small>'+r.country+'</small></span><b>'+fmt(r.visitors)+' <small>'+(r.visitors===1?'visitor':'visitors')+'</small></b><i>'+fmt(r.views)+(r.views===1?' open':' opens')+'</i></li>'}).join("")+'</ul>'}
   else h+='<p class="empty">No visits recorded yet.</p>';
   var d=j.since?j.since.slice(0,10):"";
   h+='<p class="note">Real counts, recorded since '+d+' (started from zero). The country comes from the visitor connection as seen by Cloudflare, and we do not store IP addresses. "Visitor" = a browser opening the site for the first time, not a specific person. Visits from known bots are not counted. Some of the first counts were test visits.</p>';
