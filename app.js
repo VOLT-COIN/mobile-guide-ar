@@ -214,5 +214,6 @@ function draw(j){
   var d=j.since?j.since.slice(0,10):"";
   h+='<p class="note">أرقام حقيقية تُسجَّل منذ '+d+' (تبدأ من الصفر). الدولة تُحدد من اتصال الزائر عبر Cloudflare، ولا نخزن عنوان IP. "زائر" = متصفح فتح الموقع لأول مرة، وليس شخصًا بعينه. الزيارات من بوتات معروفة لا تُحسب.</p>';
   b.innerHTML=h}
-fetch("/api/visits",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({n:isNew})}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(j&&!j.error){try{localStorage.setItem("nabd_seen","1")}catch(e){}}draw(j)}).catch(function(){draw(null)});
+var qa=false;try{if(/[?&]notrack=1/.test(location.search))localStorage.setItem("nabd_notrack","1");qa=localStorage.getItem("nabd_notrack")==="1"}catch(e){}
+(qa?fetch("/api/visits"):fetch("/api/visits",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({n:isNew})})).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(j&&!j.error){try{localStorage.setItem("nabd_seen","1")}catch(e){}}draw(j)}).catch(function(){draw(null)});
 })();
