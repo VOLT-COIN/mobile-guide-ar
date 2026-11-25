@@ -80,3 +80,4 @@ footer{max-width:1240px;margin:0 auto;padding:8px 16px 36px;color:var(--m);font-
 .intro{margin:6px 0 14px}.intro h1{font-size:1.15rem;margin:0 0 4px}.intro p{margin:0;color:var(--m);font-size:.82rem;line-height:1.7}
 .coinlinks{margin:26px 0 10px;padding-top:14px;border-top:1px solid var(--b);display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem}.coinlinks h2{flex-basis:100%;font-size:.95rem;margin:0 0 4px}.coinlinks a{color:var(--m);text-decoration:none}.coinlinks a:hover{color:var(--a)}
 .coinlinks[hidden]{display:none}
+#dIntro{flex-basis:100%;order:10;margin:0;line-height:1.7}
