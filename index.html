@@ -1,1 +1,57 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>دليلك للموبايل</title><meta name="description" content="نصائح عملية بالعربية للموبايل"><link rel="stylesheet" href="/style.css"></head><body><header><h2><a href="/">دليلك للموبايل</a></h2><nav><a href="/about.html">عن الموقع</a><a href="/privacy.html">سياسة الخصوصية</a></nav></header><main><h1>دليلك للموبايل</h1><p>نصائح عملية بالعربية لاستخدام الموبايل وصيانته: البطارية، الشحن، التخزين، وشراء الأجهزة المستعملة.</p><ul><li><a href="/post1.html">٧ خطوات لتوفير بطارية الموبايل في يوم عادي</a></li><li><a href="/post2.html">كيف تشحن الموبايل بطريقة أأمن؟ أخطاء شائعة وطرق بسيطة</a></li><li><a href="/post3.html">مساحة التخزين ممتلئة؟ طريقة منظمة لتفريغ المساحة بدون خسارة صورك</a></li><li><a href="/post4.html">كيف تعرف أن الموبايل المستعمل سليم قبل الشراء؟ قائمة فحص</a></li><li><a href="/post5.html">ماذا تفعل إذا وقع الموبايل في الماء؟ الخطوات الأولى الصحيحة</a></li></ul></main><footer>© دليلك للموبايل. كُتب هذا المحتوى بالذكاء الاصطناعي. المحتوى عام ولأغراض المعلومات فقط.</footer></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>نبض الكريبتو | أسعار العملات الرقمية وأخبارها</title>
+<meta name="description" content="أسعار مباشرة لأشهر العملات الرقمية من Binance مع شارتات وبحث وأخبار من مصادر معروفة، ووقت آخر تحديث ظاهر.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <a class="logo" href="./"><span class="mark">◆</span> نبض الكريبتو</a>
+    <div class="search"><input id="q" type="search" placeholder="ابحث عن عملة (BTC, ETH, SOL...)" autocomplete="off" aria-label="بحث عن عملة"></div>
+    <div id="status" class="pill wait" role="status"><span class="dot"></span><span id="statusText">جارٍ الاتصال...</span></div>
+  </div>
+</header>
+<div id="banner" class="banner" hidden></div>
+<main>
+  <section class="cards" id="cards">
+    <div class="card sk"></div><div class="card sk"></div><div class="card sk"></div><div class="card sk"></div>
+  </section>
+
+  <section class="panel chart-panel">
+    <div class="ph">
+      <div><h2 id="cName">—</h2><div class="big"><span id="cPrice" class="num">—</span> <span id="cChg" class="num chg"></span></div></div>
+      <div class="seg" id="range">
+        <button data-r="1D" class="on">يوم</button><button data-r="7D">أسبوع</button><button data-r="1M">شهر</button><button data-r="1Y">سنة</button>
+      </div>
+    </div>
+    <div class="chartbox"><canvas id="chart"></canvas><div id="tip" class="tip" hidden></div><div id="chartMsg" class="chartmsg">جارٍ تحميل الشارت...</div></div>
+    <p class="note">شارت الشموع من Binance (سعر الإغلاق لكل فترة). آخر نقطة تتحدث مع السعر المباشر.</p>
+  </section>
+
+  <section class="panel">
+    <div class="ph"><h2>السوق <small>أزواج USDT الأعلى حجم تداول على Binance</small></h2><div class="meta">آخر تحديث للأسعار: <b id="lastTick">—</b></div></div>
+    <div class="wrap"><table>
+      <thead><tr><th>#</th><th>العملة</th><th>السعر</th><th>24 ساعة</th><th class="hm">أعلى 24س</th><th class="hm">أدنى 24س</th><th class="hm">حجم التداول</th><th class="hm">آخر 24س</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="8" class="empty">جارٍ التحميل...</td></tr></tbody>
+    </table></div>
+    <p class="note">المصدر: واجهة بيانات السوق العامة من Binance. الأسعار أسعار تداول Binance وقد تختلف قليلًا عن منصات أخرى. حجم التداول بالدولار (USDT) على Binance فقط.</p>
+  </section>
+
+  <section class="panel">
+    <div class="ph"><h2>آخر الأخبار</h2><div class="meta">آخر فحص: <b id="lastNews">—</b> <span id="newsState"></span></div></div>
+    <div class="chips" id="chips"></div>
+    <div id="news" class="newsgrid"><div class="item sk"></div><div class="item sk"></div><div class="item sk"></div><div class="item sk"></div></div>
+    <p class="note">عناوين وروابط من خلاصات RSS العامة لمواقع Cointelegraph وCoinDesk وDecrypt وBitcoin Magazine، تُحوَّل عبر خدمة rss2json. قد يتأخر ظهور الخبر حتى ساعة تقريبًا عن موقعه الأصلي. الأخبار بالإنجليزية وحقوقها لأصحابها.</p>
+  </section>
+</main>
+<footer>
+  <p>للمعلومات فقط وليس نصيحة استثمارية. التداول بالعملات الرقمية فيه مخاطرة عالية.</p>
+  <p>أُنشئ الموقع بمساعدة الذكاء الاصطناعي، والبيانات تصل تلقائيًا من المصادر المذكورة. <a href="about.html">عن الموقع</a> · <a href="privacy.html">الخصوصية</a></p>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
