@@ -19,7 +19,7 @@ main{max-width:1100px;margin:0 auto;padding:16px}
 .panel{background:var(--p);border:1px solid var(--b);border-radius:16px;padding:16px;margin-bottom:16px}
 .ph{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 h2{margin:0;font-size:1.1rem}h2 small{color:var(--m);font-weight:400;font-size:.78rem;margin-right:6px}
-.big{font-size:1.7rem;font-weight:800}.chg{font-size:1rem;margin-right:8px}
+.big{font-size:1.7rem;font-weight:800}.chg{font-size:1rem;margin-right:8px}.chg small{color:var(--m)}
 .seg{display:flex;background:var(--p2);border-radius:10px;padding:3px;border:1px solid var(--b)}.seg button{background:none;border:0;color:var(--m);padding:6px 14px;border-radius:8px;cursor:pointer;font:inherit;font-size:.85rem}.seg button.on{background:var(--a);color:#0b0e14;font-weight:700}
 .chartbox{position:relative;height:300px}canvas{width:100%;height:100%;display:block}
 .chartmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--m);pointer-events:none}.chartmsg:empty{display:none}
