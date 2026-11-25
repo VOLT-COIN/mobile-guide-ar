@@ -119,6 +119,17 @@
       <div class="ptotal" id="pTotal"></div>
       <p class="note">Numbers are computed in your browser from current Binance prices. They are not an account statement or investment advice. Profit/loss only covers entries where you typed a buy price. The portfolio is never sent to a server; clearing browser data deletes it.</p>
     </section>
+    <section class="panel">
+      <div class="ph"><h2>Trade Profit and Fee Calculator <small>Runs in your browser, nothing is saved or sent</small></h2></div>
+      <div class="form">
+        <label>Buy price (USDT)<input id="tBuy" type="number" inputmode="decimal" min="0" step="any" placeholder="60000"></label>
+        <label>Sell price (USDT)<input id="tSell" type="number" inputmode="decimal" min="0" step="any" placeholder="66000"></label>
+        <label>Amount invested (USDT)<input id="tInv" type="number" inputmode="decimal" min="0" step="any" placeholder="1000"></label>
+        <label>Fee per side (%)<input id="tFee" type="number" inputmode="decimal" min="0" max="100" step="any" value="0.1"></label>
+      </div>
+      <div class="result" id="tRes">Enter a buy price, a sell price and the amount.</div>
+      <p class="note">The result assumes the same fee percent on the buy and on the sell, taken from the amount traded, and ignores spreads, slippage, funding and taxes. Check your exchange for its real fee. A calculation tool for information, not investment advice.</p>
+    </section>
   </div>
 </main>
 <footer>
