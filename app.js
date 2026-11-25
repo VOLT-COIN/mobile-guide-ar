@@ -19,15 +19,15 @@ function cards(){
   var g=top.slice().sort(function(a,b){return D[b].pct-D[a].pct})[0];
   function c(l,v,s,cl){return '<div class="card"><div class="l">'+l+'</div><div class="v">'+v+'</div><div class="s '+(cl||"")+'">'+(s||"&nbsp;")+'</div></div>'}
   function pc(s){var p=D[s].pct;return '<span class="num">'+(p>=0?"+":"")+p.toFixed(2)+"%</span>"}
-  $("cards").innerHTML=c("Bitcoin","$"+fmt(D.BTC.last),pc("BTC"),D.BTC.pct>=0?"up":"down")+c("Ethereum","$"+fmt(D.ETH.last),pc("ETH"),D.ETH.pct>=0?"up":"down")+
-   c("أعلى صعودًا بين أبرز العملات",g+" <span class='num'>"+fmt(D[g].last)+"</span>",pc(g),"up")+
-   c("اتجاه أبرز العملات","<span class='up'>"+up+"</span> / <span class='down'>"+dn+"</span>","صاعد / هابط · حجم 24 ساعة <span class=\"num\">$"+fv(vol)+"</span>")}
+  $("cards").innerHTML=c("Bitcoin",fmt(D.BTC.last)+" USDT",pc("BTC"),D.BTC.pct>=0?"up":"down")+c("Ethereum",fmt(D.ETH.last)+" USDT",pc("ETH"),D.ETH.pct>=0?"up":"down")+
+   c("أعلى صعودًا بين أبرز العملات",g+" <span class='num'>"+fmt(D[g].last)+" USDT</span>",pc(g),"up")+
+   c("العملات المتتبَّعة: صاعدة / هابطة","<span class='up'>"+up+"</span> / <span class='down'>"+dn+"</span>","من "+top.length+" عملة متتبَّعة على Binance (وليس السوق كله) · حجم 24 ساعة <span class=\"num\">"+fv(vol)+" USDT</span>")}
 function spk(s){var a=spark[s];if(!a)return"";var mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),w=96,h=30,r=mx-mn||1;var pts=a.map(function(v,i){return(i/(a.length-1)*w).toFixed(1)+","+(h-2-(v-mn)/r*(h-4)).toFixed(1)}).join(" ");
   return '<svg class="spark" viewBox="0 0 96 30"><polyline fill="none" stroke="'+(a[a.length-1]>=a[0]?"#22c55e":"#ef4444")+'" stroke-width="1.6" points="'+pts+'"/></svg>'}
 function table(){
   var l=visible();if(!l.length){$("rows").innerHTML='<tr><td colspan="8" class="empty">'+(order.length?"لا توجد عملة بهذا الاسم":"جارٍ التحميل...")+'</td></tr>';return}
   $("rows").innerHTML=l.map(function(s,i){var d=D[s],cl=d.pct>=0?"up":"down",f=prev[s]?(d.last>prev[s]?"fu":d.last<prev[s]?"fd":""):"";
-    return '<tr data-s="'+s+'" class="'+(s===sel?"sel ":"")+f+'"><td>'+(i+1)+'</td><td><div class="sym"><div class="ico">'+esc(s.slice(0,3))+'</div><div><b>'+esc(s)+'</b><small>'+esc(NAMES[s]||s+"/USDT")+'</small></div></div></td><td class="n">$'+fmt(d.last)+'</td><td class="n '+cl+'">'+(d.pct>=0?"+":"")+d.pct.toFixed(2)+'%</td><td class="n hm">'+fmt(d.high)+'</td><td class="n hm">'+fmt(d.low)+'</td><td class="n hm">$'+fv(d.vol)+'</td><td class="hm">'+spk(s)+'</td></tr>'}).join("");
+    return '<tr data-s="'+s+'" class="'+(s===sel?"sel ":"")+f+'"><td>'+(i+1)+'</td><td><div class="sym"><div class="ico">'+esc(s.slice(0,3))+'</div><div><b>'+esc(s)+'</b><small>'+esc(NAMES[s]||s+"/USDT")+'</small></div></div></td><td class="n">'+fmt(d.last)+'</td><td class="n '+cl+'">'+(d.pct>=0?"+":"")+d.pct.toFixed(2)+'%</td><td class="n hm">'+fmt(d.high)+'</td><td class="n hm">'+fmt(d.low)+'</td><td class="n hm">'+fv(d.vol)+'</td><td class="hm">'+spk(s)+'</td></tr>'}).join("");
   l.forEach(function(s){prev[s]=D[s].last});
   document.querySelector("table").className=isStale()?"stalecls":"";
   sparks(l)}
@@ -35,7 +35,7 @@ function sparks(l){var need=l.filter(function(s){return !sparkAt[s]||Date.now()-
   function next(){if(i>=need.length)return;var batch=need.slice(i,i+5);i+=5;sparkAt[batch[0]]=sparkAt[batch[0]]||0;
     Promise.all(batch.map(function(s){sparkAt[s]=Date.now();return fetch(BASE+"/api/v3/klines?symbol="+s+"USDT&interval=1h&limit=24").then(function(r){return r.json()}).then(function(k){if(Array.isArray(k))spark[s]=k.map(function(x){return+x[4]})}).catch(function(){sparkAt[s]=0})})).then(function(){table();setTimeout(next,300)})}
   if(need.length&&!sparks.busy){sparks.busy=1;setTimeout(function(){sparks.busy=0},4000);next()}}
-function head(){var d=D[sel];if(!d)return;$("cName").textContent=(NAMES[sel]||sel)+" ("+sel+"/USDT)";$("cPrice").textContent="$"+fmt(d.last);var e=$("cChg");e.innerHTML='<span class="num">'+(d.pct>=0?"+":"")+d.pct.toFixed(2)+'%</span> <small>خلال 24 ساعة</small>';e.className="chg "+(d.pct>=0?"up":"down")}
+function head(){var d=D[sel];if(!d)return;$("cName").textContent=(NAMES[sel]||sel)+" ("+sel+"/USDT)";$("cPrice").textContent=fmt(d.last)+" USDT";var e=$("cChg");e.innerHTML='<span class="num">'+(d.pct>=0?"+":"")+d.pct.toFixed(2)+'%</span> <small>خلال 24 ساعة</small>';e.className="chg "+(d.pct>=0?"up":"down")}
 function render(){lastRender=Date.now();cards();table();head();drawChart()}
 function schedule(){if(pending)return;pending=true;setTimeout(function(){pending=false;render()},Math.max(0,1000-(Date.now()-lastRender)))}
 // chart
@@ -54,7 +54,7 @@ function drawChart(){var cv=$("chart"),dpr=window.devicePixelRatio||1,w=cv.clien
   x.beginPath();pts.forEach(function(p,i){i?x.lineTo(X(i),Y(p.c)):x.moveTo(X(i),Y(p.c))});x.lineTo(X(pts.length-1),T+ch);x.lineTo(X(0),T+ch);x.closePath();x.fillStyle=gr;x.fill();
   x.beginPath();pts.forEach(function(p,i){i?x.lineTo(X(i),Y(p.c)):x.moveTo(X(i),Y(p.c))});x.strokeStyle=col;x.lineWidth=2;x.stroke();
   if(hover>=0&&hover<pts.length){var hx=X(hover),hy=Y(pts[hover].c);x.strokeStyle="#8d99ae88";x.lineWidth=1;x.beginPath();x.moveTo(hx,T);x.lineTo(hx,T+ch);x.stroke();x.fillStyle=col;x.beginPath();x.arc(hx,hy,4,0,7);x.fill();
-    var t=$("tip");t.hidden=false;t.textContent="$"+fmt(pts[hover].c)+"  "+new Date(pts[hover].t).toLocaleString("en-GB",{hour12:false,day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});t.style.left=Math.min(Math.max(hx-60,4),w-R-130)+"px"}else $("tip").hidden=true;
+    var t=$("tip");t.hidden=false;t.textContent=fmt(pts[hover].c)+" USDT"+"  "+new Date(pts[hover].t).toLocaleString("en-GB",{hour12:false,day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"});t.style.left=Math.min(Math.max(hx-60,4),w-R-130)+"px"}else $("tip").hidden=true;
   drawChart.pts=pts;drawChart.geo={L:L,cw:cw}}
 function hv(e){var p=drawChart.pts,g=drawChart.geo;if(!p)return;var r=$("chart").getBoundingClientRect(),xx=(e.touches?e.touches[0].clientX:e.clientX)-r.left;hover=Math.max(0,Math.min(p.length-1,Math.round((xx-g.L)/g.cw*(p.length-1))));drawChart()}
 $("chart").addEventListener("mousemove",hv);$("chart").addEventListener("touchmove",hv,{passive:true});$("chart").addEventListener("mouseleave",function(){hover=-1;drawChart()});$("chart").addEventListener("touchend",function(){hover=-1;drawChart()});
