@@ -209,10 +209,10 @@ function fmt(n){return n.toLocaleString("en-US")}
 function draw(j){
   if(!j||j.error){b.textContent="العدّاد غير متاح الآن.";return}
   var h='<div class="vis-tot"><div><b>'+fmt(j.totalVisitors)+'</b><span>زائر (متصفح مختلف)</span></div><div><b>'+fmt(j.totalViews)+'</b><span>مرة فتح للصفحة</span></div></div>';
-  if(j.countries.length){h+='<ul class="vis-list">'+j.countries.map(function(r){return '<li><span class="fl" aria-hidden="true">'+flag(r.country)+'</span><span class="cn">'+nm(r.country)+' <small>'+r.country+'</small></span><b>'+fmt(r.visitors)+'</b><i>'+fmt(r.views)+'</i></li>'}).join("")+'</ul>'}
+  if(j.countries.length){h+='<ul class="vis-list">'+j.countries.map(function(r){return '<li><span class="fl" aria-hidden="true">'+flag(r.country)+'</span><span class="cn">'+nm(r.country)+' <small>'+r.country+'</small></span><b>'+fmt(r.visitors)+' <small>زائر</small></b><i>'+fmt(r.views)+' فتح</i></li>'}).join("")+'</ul>'}
   else h+='<p class="empty">لا توجد زيارات مسجلة بعد.</p>';
   var d=j.since?j.since.slice(0,10):"";
-  h+='<p class="note">أرقام حقيقية تُسجَّل منذ '+d+' (تبدأ من الصفر). الدولة تُحدد من اتصال الزائر عبر Cloudflare، ولا نخزن عنوان IP. "زائر" = متصفح فتح الموقع لأول مرة، وليس شخصًا بعينه. العمود الأول زوّار والثاني مرات الفتح. الزيارات من بوتات معروفة لا تُحسب.</p>';
+  h+='<p class="note">أرقام حقيقية تُسجَّل منذ '+d+' (تبدأ من الصفر). الدولة تُحدد من اتصال الزائر عبر Cloudflare، ولا نخزن عنوان IP. "زائر" = متصفح فتح الموقع لأول مرة، وليس شخصًا بعينه. الزيارات من بوتات معروفة لا تُحسب.</p>';
   b.innerHTML=h}
 fetch("/api/visits",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({n:isNew})}).then(function(r){return r.json()}).then(draw).catch(function(){draw(null)});
 })();
