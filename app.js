@@ -1,7 +1,7 @@
 (function(){
 "use strict";
 var BASE="https://data-api.binance.vision",WSU="wss://data-stream.binance.vision/ws/!miniTicker@arr";
-var NAMES={BTC:"Bitcoin",ETH:"Ethereum",BNB:"BNB",SOL:"Solana",XRP:"XRP",ADA:"Cardano",DOGE:"Dogecoin",TRX:"TRON",LTC:"Litecoin",AVAX:"Avalanche",DOT:"Polkadot",LINK:"Chainlink",MATIC:"Polygon",POL:"Polygon",SHIB:"Shiba Inu",TON:"Toncoin",BCH:"Bitcoin Cash",NEAR:"NEAR",UNI:"Uniswap",ATOM:"Cosmos",XLM:"Stellar",ETC:"Ethereum Classic",FIL:"Filecoin",APT:"Aptos",ARB:"Arbitrum",OP:"Optimism",SUI:"Sui",PEPE:"Pepe",AAVE:"Aave",INJ:"Injective",HBAR:"Hedera",ICP:"Internet Computer"};
+var NAMES={BTC:"Bitcoin",ETH:"Ethereum",BNB:"BNB",SOL:"Solana",XRP:"XRP",ADA:"Cardano",DOGE:"Dogecoin",TRX:"TRON",LTC:"Litecoin",AVAX:"Avalanche",DOT:"Polkadot",LINK:"Chainlink",MATIC:"Polygon",POL:"Polygon",SHIB:"Shiba Inu",TON:"Toncoin",BCH:"Bitcoin Cash",NEAR:"NEAR",UNI:"Uniswap",ATOM:"Cosmos",XLM:"Stellar",ETC:"Ethereum Classic",FIL:"Filecoin",APT:"Aptos",ARB:"Arbitrum",OP:"Optimism",SUI:"Sui",PEPE:"Pepe",AAVE:"Aave",INJ:"Injective",HBAR:"Hedera",ICP:"Internet Computer",ZEC:"Zcash",HYPE:"Hyperliquid",TAO:"Bittensor",RENDER:"Render",FET:"Fetch.ai",IMX:"Immutable",MKR:"Maker",GRT:"The Graph",ALGO:"Algorand",VET:"VeChain",SAND:"The Sandbox",MANA:"Decentraland",CRV:"Curve",LDO:"Lido DAO",RUNE:"THORChain",SEI:"Sei",TIA:"Celestia",WLD:"Worldcoin",ENA:"Ethena",JUP:"Jupiter",ONDO:"Ondo",PENDLE:"Pendle",BONK:"Bonk",WIF:"dogwifhat",FLOKI:"Floki",XMR:"Monero",EOS:"EOS",XTZ:"Tezos",THETA:"Theta",AXS:"Axie Infinity",GALA:"Gala",CAKE:"PancakeSwap",QNT:"Quant",KAS:"Kaspa",STX:"Stacks",EGLD:"MultiversX",FTM:"Fantom",S:"Sonic",PAXG:"PAX Gold",CRO:"Cronos",ENS:"ENS",COMP:"Compound",SNX:"Synthetix",DYDX:"dYdX",TRUMP:"Official Trump",WLFI:"World Liberty",PUMP:"Pump.fun"};
 var STABLE={USDC:1,FDUSD:1,TUSD:1,USDP:1,DAI:1,EUR:1,AEUR:1,USDE:1,BUSD:1,XUSD:1,USD1:1};
 var D={},lastTick=0,wsOk=false,ws=null,sel="BTC",range="1D",order=[],spark={},sparkAt={},prev={},filter="",lastRender=0,pending=false;
 var $=function(i){return document.getElementById(i)};
@@ -10,7 +10,7 @@ function fv(v){v=+v;return v>=1e9?(v/1e9).toFixed(2)+"B":v>=1e6?(v/1e6).toFixed(
 function tm(d){return new Date(d).toLocaleTimeString("en-GB")}
 function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
 function setStatus(c,t){$("status").className="pill "+c;$("statusText").textContent=t}
-function ingest(arr){arr.forEach(function(t){var s=t.s;if(!/USDT$/.test(s))return;var b=s.slice(0,-4);if(STABLE[b]||/(UP|DOWN|BULL|BEAR)$/.test(b))return;var o=+t.o,c=+t.c;D[b]={last:c,open:o,pct:o>0?(c-o)/o*100:0,high:+t.h,low:+t.l,vol:+t.q}});lastTick=Date.now()}
+function ingest(arr){arr.forEach(function(t){var s=t.s;if(!/USDT$/.test(s))return;var b=s.slice(0,-4);if(!NAMES[b]||STABLE[b]||/(UP|DOWN|BULL|BEAR)$/.test(b))return;var o=+t.o,c=+t.c;D[b]={last:c,open:o,pct:o>0?(c-o)/o*100:0,high:+t.h,low:+t.l,vol:+t.q}});lastTick=Date.now()}
 function rank(){order=Object.keys(D).sort(function(a,b){return D[b].vol-D[a].vol}).slice(0,200)}
 function visible(){var q=filter.trim().toUpperCase();var l=order;if(q)l=order.filter(function(s){return s.indexOf(q)>-1||(NAMES[s]||"").toUpperCase().indexOf(q)>-1});return l.slice(0,40)}
 function isStale(){return Date.now()-lastTick>15000}
@@ -20,8 +20,8 @@ function cards(){
   function c(l,v,s,cl){return '<div class="card"><div class="l">'+l+'</div><div class="v">'+v+'</div><div class="s '+(cl||"")+'">'+(s||"&nbsp;")+'</div></div>'}
   function pc(s){var p=D[s].pct;return '<span class="num">'+(p>=0?"+":"")+p.toFixed(2)+"%</span>"}
   $("cards").innerHTML=c("Bitcoin","$"+fmt(D.BTC.last),pc("BTC"),D.BTC.pct>=0?"up":"down")+c("Ethereum","$"+fmt(D.ETH.last),pc("ETH"),D.ETH.pct>=0?"up":"down")+
-   c("أعلى صعودًا (أكبر 100 زوج)",g+" <span class='num'>"+fmt(D[g].last)+"</span>",pc(g),"up")+
-   c("اتجاه السوق (أكبر 100 زوج)","<span class='up'>"+up+"</span> / <span class='down'>"+dn+"</span>","صاعد / هابط · حجم 24 ساعة <span class=\"num\">$"+fv(vol)+"</span>")}
+   c("أعلى صعودًا بين أبرز العملات",g+" <span class='num'>"+fmt(D[g].last)+"</span>",pc(g),"up")+
+   c("اتجاه أبرز العملات","<span class='up'>"+up+"</span> / <span class='down'>"+dn+"</span>","صاعد / هابط · حجم 24 ساعة <span class=\"num\">$"+fv(vol)+"</span>")}
 function spk(s){var a=spark[s];if(!a)return"";var mn=Math.min.apply(0,a),mx=Math.max.apply(0,a),w=96,h=30,r=mx-mn||1;var pts=a.map(function(v,i){return(i/(a.length-1)*w).toFixed(1)+","+(h-2-(v-mn)/r*(h-4)).toFixed(1)}).join(" ");
   return '<svg class="spark" viewBox="0 0 96 30"><polyline fill="none" stroke="'+(a[a.length-1]>=a[0]?"#22c55e":"#ef4444")+'" stroke-width="1.6" points="'+pts+'"/></svg>'}
 function table(){
