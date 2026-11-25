@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://nabd-crypto.pages.dev/sitemap.xml
+Sitemap: https://chainbeat.pages.dev/sitemap.xml
