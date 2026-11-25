@@ -7,7 +7,7 @@ const FEEDS = [
 ];
 const RELEVANT = /bitcoin|\bbtc\b|ethereum|\beth\b|crypto|blockchain|token|\bcoins?\b|defi|\bnft|stablecoin|solana|ripple|\bxrp\b|dogecoin|binance|coinbase|\betfs?\b|altcoin|web3|wallet|\bmin(?:ing|ers?)\b|satoshi|ledger|memecoin|on-?chain|\bdao\b|airdrop|staking|tether|\busdt\b|\busdc\b|\bsec\b|cftc|exchange|digital asset|halving/i;
 function clean(s) {
-  return (s || "").replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&#8217;/g, "\u2019").trim();
+  return (s || "").replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#x([0-9a-f]+);/gi, (m, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (m, n) => String.fromCodePoint(+n)).replace(/&apos;/g, "'").trim();
 }
 function tag(block, name) {
   const m = block.match(new RegExp("<" + name + "[^>]*>([\\s\\S]*?)</" + name + ">", "i"));
