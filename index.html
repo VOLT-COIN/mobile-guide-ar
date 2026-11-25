@@ -33,7 +33,7 @@
     </section>
 
     <section class="panel">
-      <div class="ph"><h2>خريطة السوق <small>اللون = تغيّر 24 ساعة، والمربعات الأكبر أعلى حجم تداول بشكل تقريبي (أبرز 40 عملة متتبَّعة، مرتبة بالحجم)</small></h2></div>
+      <div class="ph"><h2>خريطة السوق <small>اللون = تغيّر 24 ساعة. أعلى 40 عملة متتبَّعة بحجم التداول (المربعات متساوية الحجم)</small></h2></div>
       <div class="heat" id="heat"></div>
     </section>
 
@@ -86,6 +86,7 @@
   </div>
   <div id="tools" class="det">
     <div class="crumb"><a href="#/">السوق</a><span>›</span><span>الأدوات</span></div>
+    <div class="banner err" id="tStale" hidden></div>
     <section class="panel">
       <div class="ph"><h2>محوّل العملات <small>بأسعار Binance الحالية (USDT)</small></h2></div>
       <div class="form">
@@ -106,7 +107,7 @@
         <button class="btn primary" id="pAdd">إضافة</button>
       </div>
       <div id="pMsg" class="note"></div>
-      <div class="wrap"><table class="ptable"><thead><tr><th>العملة</th><th>الكمية</th><th class="hm">سعر الشراء</th><th class="hm">السعر الحالي</th><th>القيمة (USDT)</th><th>الربح/الخسارة</th><th></th></tr></thead><tbody id="pRows"></tbody></table></div>
+      <div class="pcards" id="pRows"></div>
       <div class="ptotal" id="pTotal"></div>
       <p class="note">الأرقام تُحسب في متصفحك من أسعار Binance الحالية، وليست كشف حساب ولا نصيحة استثمارية. الربح/الخسارة يشمل الصفقات التي أدخلت لها سعر شراء فقط. لا تُرسل المحفظة إلى أي خادم؛ مسح بيانات المتصفح يحذفها.</p>
     </section>
