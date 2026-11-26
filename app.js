@@ -232,3 +232,14 @@ if(!(b>0)||!(s>0)||!(inv>0)||!(fee>=0)||fee>=100){r.textContent="Enter a buy pri
 var k=fee/100,qty=inv*(1-k)/b,gross=qty*s,out=gross*(1-k),pl=out-inv,pct=pl/inv*100,be=b/((1-k)*(1-k));
 r.innerHTML='Coins bought: <b class="num">'+qty.toLocaleString("en-US",{maximumFractionDigits:8})+'</b><br>You receive after fees: <b class="num">'+f(out)+' USDT</b><br>Profit/loss: <b class="num '+(pl>=0?"up":"down")+'">'+(pl>=0?"+":"")+f(pl)+' USDT ('+(pct>=0?"+":"")+pct.toFixed(2)+'%)</b><br>Total fees paid: <b class="num">'+f(inv*k+gross*k)+' USDT</b><br>Break-even sell price: <b class="num">'+(be>=1?f(be):be.toLocaleString("en-US",{maximumSignificantDigits:6}))+' USDT</b>'}
 ids.forEach(function(i){var e=document.getElementById(i);if(e)e.addEventListener("input",calc)});calc()})();
+
+(function(){function n(i){var v=parseFloat(document.getElementById(i).value);return isFinite(v)?v:NaN}
+function f(x){return x.toLocaleString("en-US",{maximumFractionDigits:2})}
+function g(x){return x>=1?f(x):x.toLocaleString("en-US",{maximumSignificantDigits:6})}
+function calc(){var r=document.getElementById("zRes");if(!r)return;var acc=n("zAcc"),rk=n("zRisk"),e=n("zEnt"),st=n("zStop"),t=n("zTgt");
+if(!(acc>0)||!(rk>0)||rk>100||!(e>0)||!(st>0)||e===st){r.textContent="Enter the account size, entry price and stop price (stop must differ from entry).";return}
+var long=st<e,d=Math.abs(e-st),loss=acc*rk/100,qty=loss/d,val=qty*e,lev=val/acc;
+var h='Direction: <b>'+(long?"Long":"Short")+'</b><br>Amount at risk: <b class="num">'+f(loss)+' USDT</b><br>Position size: <b class="num">'+qty.toLocaleString("en-US",{maximumSignificantDigits:8})+' coins</b><br>Position value: <b class="num">'+f(val)+' USDT</b> ('+lev.toFixed(2)+'x of the account'+(lev>1?", needs leverage or margin":"")+')<br>Distance to stop: <b class="num">'+(d/e*100).toFixed(2)+'%</b>';
+if(t>0){var ok=long?t>e:t<e;if(ok){var rw=Math.abs(t-e)*qty;h+='<br>Reward at target: <b class="num up">+'+f(rw)+' USDT</b><br>Reward to risk: <b class="num">'+(rw/loss).toFixed(2)+' : 1</b>'}else h+='<br><span class="note">The target is on the wrong side of the entry for a '+(long?"long":"short")+'.</span>'}
+r.innerHTML=h}
+["zAcc","zRisk","zEnt","zStop","zTgt"].forEach(function(i){var e=document.getElementById(i);if(e)e.addEventListener("input",calc)});calc()})();
