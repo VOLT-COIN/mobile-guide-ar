@@ -130,6 +130,18 @@
       <div class="result" id="tRes">Enter a buy price, a sell price and the amount.</div>
       <p class="note">The result assumes the same fee percent on the buy and on the sell, taken from the amount traded, and ignores spreads, slippage, funding and taxes. Check your exchange for its real fee. A calculation tool for information, not investment advice.</p>
     </section>
+    <section class="panel">
+      <div class="ph"><h2>Position Size and Risk Calculator <small>Runs in your browser, nothing is saved or sent</small></h2></div>
+      <div class="form">
+        <label>Account size (USDT)<input id="zAcc" type="number" inputmode="decimal" min="0" step="any" placeholder="5000"></label>
+        <label>Risk per trade (%)<input id="zRisk" type="number" inputmode="decimal" min="0" max="100" step="any" value="1"></label>
+        <label>Entry price (USDT)<input id="zEnt" type="number" inputmode="decimal" min="0" step="any" placeholder="60000"></label>
+        <label>Stop price (USDT)<input id="zStop" type="number" inputmode="decimal" min="0" step="any" placeholder="58800"></label>
+        <label>Target price, optional (USDT)<input id="zTgt" type="number" inputmode="decimal" min="0" step="any" placeholder="64000"></label>
+      </div>
+      <div class="result" id="zRes">Enter the account size, entry price and stop price.</div>
+      <p class="note">Position size = amount you accept to lose divided by the distance from entry to stop. Works for long (stop below entry) and short (stop above entry). Fees, slippage and gaps past the stop are ignored, so a real loss can be larger. A calculation tool for information, not investment advice.</p>
+    </section>
   </div>
 </main>
 <footer>
