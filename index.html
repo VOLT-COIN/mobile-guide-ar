@@ -143,6 +143,15 @@
       <div class="result" id="zRes">Enter the account size, entry price and stop price.</div>
       <p class="note">Position size = amount you accept to lose divided by the distance from entry to stop. Works for long (stop below entry) and short (stop above entry). Fees, slippage and gaps past the stop are ignored, so a real loss can be larger. A calculation tool for information, not investment advice.</p>
     </section>
+    <section class="panel">
+      <div class="ph"><h2>Average Entry Price Calculator <small>Runs in your browser, nothing is saved or sent</small></h2></div>
+      <div class="form">
+        <label style="min-width:100%">Your buys, one per line: price, amount in USDT<textarea id="aBuys" rows="5" placeholder="60000, 500&#10;55000, 500&#10;48000, 1000" style="width:100%;font:inherit;padding:10px;border-radius:10px;border:1px solid var(--b);background:var(--bg2);color:var(--t)"></textarea></label>
+        <label>Current price, optional (USDT)<input id="aNow" type="number" inputmode="decimal" min="0" step="any" placeholder="52000"></label>
+      </div>
+      <div class="result" id="aRes">Enter at least one buy, for example 60000, 500.</div>
+      <p class="note">Average price = total USDT spent divided by total coins bought. Fees are ignored, so add them to each amount if you want them counted. A calculation tool for information, not investment advice.</p>
+    </section>
   </div>
 </main>
 <footer>
