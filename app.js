@@ -243,3 +243,14 @@ var h='Direction: <b>'+(long?"Long":"Short")+'</b><br>Amount at risk: <b class="
 if(t>0){var ok=long?t>e:t<e;if(ok){var rw=Math.abs(t-e)*qty;h+='<br>Reward at target: <b class="num up">+'+f(rw)+' USDT</b><br>Reward to risk: <b class="num">'+(rw/loss).toFixed(2)+' : 1</b>'}else h+='<br><span class="note">The target is on the wrong side of the entry for a '+(long?"long":"short")+'.</span>'}
 r.innerHTML=h}
 ["zAcc","zRisk","zEnt","zStop","zTgt"].forEach(function(i){var e=document.getElementById(i);if(e)e.addEventListener("input",calc)});calc()})();
+(function(){function f(x){return x.toLocaleString("en-US",{maximumFractionDigits:2})}
+function g(x){return x>=1?f(x):x.toLocaleString("en-US",{maximumSignificantDigits:6})}
+function calc(){var r=document.getElementById("aRes"),t=document.getElementById("aBuys");if(!r||!t)return;
+var rows=t.value.split(/\n/),spent=0,coins=0,cnt=0,bad=0;
+rows.forEach(function(l){l=l.trim();if(!l)return;var p=l.split(/[,;\s]+/),pr=parseFloat(p[0]),am=parseFloat(p[1]);if(p.length>=2&&pr>0&&am>0&&isFinite(pr)&&isFinite(am)){spent+=am;coins+=am/pr;cnt++}else bad++});
+if(!cnt){r.textContent="Enter at least one buy, for example 60000, 500.";return}
+var avg=spent/coins,h='Buys counted: <b class="num">'+cnt+'</b>'+(bad?' <span class="note">('+bad+' line'+(bad>1?"s":"")+' skipped, use: price, amount)</span>':"")+'<br>Total spent: <b class="num">'+f(spent)+' USDT</b><br>Coins bought: <b class="num">'+coins.toLocaleString("en-US",{maximumFractionDigits:8})+'</b><br>Average entry price: <b class="num">'+g(avg)+' USDT</b>';
+var now=parseFloat(document.getElementById("aNow").value);
+if(now>0&&isFinite(now)){var v=coins*now,pl=v-spent,pc=pl/spent*100;h+='<br>Value at current price: <b class="num">'+f(v)+' USDT</b><br>Profit/loss: <b class="num '+(pl>=0?"up":"down")+'">'+(pl>=0?"+":"")+f(pl)+' USDT ('+(pc>=0?"+":"")+pc.toFixed(2)+'%)</b>'}
+r.innerHTML=h}
+["aBuys","aNow"].forEach(function(i){var e=document.getElementById(i);if(e)e.addEventListener("input",calc)});calc()})();
