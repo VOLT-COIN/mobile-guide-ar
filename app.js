@@ -254,3 +254,13 @@ var now=parseFloat(document.getElementById("aNow").value);
 if(now>0&&isFinite(now)){var v=coins*now,pl=v-spent,pc=pl/spent*100;h+='<br>Value at current price: <b class="num">'+f(v)+' USDT</b><br>Profit/loss: <b class="num '+(pl>=0?"up":"down")+'">'+(pl>=0?"+":"")+f(pl)+' USDT ('+(pc>=0?"+":"")+pc.toFixed(2)+'%)</b>'}
 r.innerHTML=h}
 ["aBuys","aNow"].forEach(function(i){var e=document.getElementById(i);if(e)e.addEventListener("input",calc)});calc()})();
+
+(function(){
+var b=document.getElementById("installBtn"),dp=null;
+if("serviceWorker" in navigator&&location.protocol==="https:"){
+window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})})}
+if(!b)return;
+window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();dp=e;b.hidden=false});
+b.onclick=function(){if(!dp){b.hidden=true;return}dp.prompt();dp.userChoice.then(function(){dp=null;b.hidden=true}).catch(function(){dp=null;b.hidden=true})};
+window.addEventListener("appinstalled",function(){b.hidden=true;dp=null});
+})();
